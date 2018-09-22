@@ -1,20 +1,24 @@
-import * as React from 'react';
+import * as React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Address from './Address';
 import './App.css';
+import Ballot from './Ballot';
+import Footer from './Footer';
+import Welcome from './Welcome';
 
-import logo from './logo.svg';
+import "./css/ml.css";
 
 class App extends React.Component {
   public render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </div>
+      <Router>
+        <div>
+          <Route exact={true} path="/" component={Welcome} />
+          <Route path="/address" component={Address} />
+          <Route path="/ballot" component={Ballot} />
+          <Footer />
+        </div>
+      </Router>
     );
   }
 }
