@@ -7,8 +7,14 @@ provider:
   runtime: nodejs8.10
 
 functions:
+  sample-data:
+    handler: server/sample-data.data
+    events:
+      - http:
+          method: get
+          path: sample-data
   version:
-    handler: server/handler.version
+    handler: server/version.version
     events:
       - http:
           method: get
