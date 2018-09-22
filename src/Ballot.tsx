@@ -1,6 +1,13 @@
 import * as React from "react";
 import "./App.css";
+
+import CallToAction from "./CallToAction";
 import Candidate from './Candidate';
+import DistrictHeader from './DistrictHeader';
+import Endorser from './Endorser';
+import appleby from './img/candidates/appleby.jpg'
+import RaceHeader from './RaceHeader';
+import Sponsors from './Sponsors';
 
 class Ballot extends React.Component {
 
@@ -11,22 +18,26 @@ class Ballot extends React.Component {
      candidateName: 'Marty McPolitican',
      candidateUrl: 'http://www.google.com',
      candidateUrlText: 'My super cool website',
-     imgSrc: '',
+     imgSrc: appleby,
      municipalLeagueRating: 'Amazinggggggggg',
      party: 'PARTYYY',
      userNames: 'What goes here',
    };
 
    return (
-     <div className="main">
-       <h3>Your Ballot Guide.</h3>
-       <div className="step" id="step1">
-         <span>Step 1:</span> We'll show you endorsements from these trusted
-         organizations as well as recommendations from the Municipal League on
-         your ballot below. Uncheck the ones you don't want to see.
-       </div>
-
+     <div>
+       <CallToAction />
+       <Endorser description="The Seattle Times"
+        endorserId="1234"
+        endorserImg=""
+        endorserUrl="http://www.google.com"
+         endorserUrlText="The Seattle Times" />
+       <DistrictHeader districtName="Test District" />
+       <RaceHeader raceName="Test Race" />
        <Candidate data={testData} />
+       <Sponsors sponsors={[
+         { altText: "Seattle Seahawks", imgSrc: "https://readysetvote.org/img/sponsor_seahawks.gif" }
+       ]} />
      </div>
    );
  }

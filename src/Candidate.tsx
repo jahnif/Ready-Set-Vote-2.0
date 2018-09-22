@@ -1,6 +1,8 @@
 import * as React from 'react';
 import './css/ml.css';
 
+import EndorserList from './EndorserList';
+
 interface ICandidateProps {
     data: ICandidate
 }
@@ -26,12 +28,9 @@ class Candidate extends React.Component<ICandidateProps> {
                 <a href={this.props.data.candidateUrl} target="_blank" className="seat-url">{this.props.data.candidateUrlText}</a>
                 <div className="seat-divider"/>
                 <div className="seat-endorsedBy">
-                    <span className="seat-endorsedBy-head">Endorsed By:</span><br />
-                    
-                    <a className="endlink endlink" href='http://"rsEnd("endorserURL")' target='_blank'>{this.props.data.userNames}</a>
-						<div className="endorserList">TODO ENDORSER LIST</div>
-						</div>
-					<div className="seat-verticalAlignment">
+                    <EndorserList endorserList={
+                        [{ url: 'http://www.google.com', text: 'Test Endorsement' }]
+                    } />
                     <div className="mlRating">
                         Municipal League Rating:
                         <br /><span>
