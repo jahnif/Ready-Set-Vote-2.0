@@ -2,9 +2,6 @@ import { action, computed, observable } from "mobx";
 import { EndorserStore } from "./EndorserStore";
 
 export class BallotStore {
-  @observable
-  public endorsers: EndorserStore[] = [];
-
   @computed
   get endorsersSelectedString() {
     const selected = this.selectedEndorsers.length;
@@ -22,6 +19,15 @@ export class BallotStore {
   get selectedEndorsers() {
     return this.endorsers.filter(e => e.selected);
   }
+  @observable
+  public endorsers: EndorserStore[] = [];
+  @observable
+  public percentComplete: number = 0;
+
+  @action
+  public setPercentComplete(percentComplete: number): any {
+    this.percentComplete = percentComplete;
+  }
 
   @action
   public addEndorser(endorser: EndorserStore) {
@@ -30,13 +36,13 @@ export class BallotStore {
 
   @action
   public selectAll = () => {
-    this.endorsers.map((e) => e.setSelected(true));
-  }
+    this.endorsers.map(e => e.setSelected(true));
+  };
 
   @action
   public selectNone = () => {
-    this.endorsers.map((e) => e.setSelected(false));
-  }
+    this.endorsers.map(e => e.setSelected(false));
+  };
 }
 
 export const ballotStore = new BallotStore();

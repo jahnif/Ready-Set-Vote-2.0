@@ -44,7 +44,7 @@ class EndorserStatusBar extends React.Component<IProps> {
             </a>
           </div>
           <div className="progressContainer">
-            <div id="progress" className="progress" style={{ width: "1%" }} />
+            <div id="progress" className="progress" style={{ width: ballotStore.percentComplete + "%" }} />
           </div>
         </div>
       </Sticky>

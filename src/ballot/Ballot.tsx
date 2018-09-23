@@ -14,6 +14,21 @@ import Step1Header from "./Step1Header";
 import Step2Header from "./Step2Header";
 
 class Ballot extends React.Component {
+  public componentDidMount() {
+    window.addEventListener('scroll', this.handleScroll);
+  }
+
+  public componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  public handleScroll(): void {
+    const top = window.scrollY;
+    const height = document.body.getBoundingClientRect().height - window.innerHeight;
+    const percentComplete = Math.ceil( top / height * 100 );
+    ballotStore.setPercentComplete(percentComplete);
+  }
+
   public render() {
     const demoCandidate = {
       candidateId: "testId",
