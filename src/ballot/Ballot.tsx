@@ -1,11 +1,12 @@
 import * as React from "react";
-import "./App.css";
 
+import Header from "../Header";
+import appleby from "../img/candidates/appleby.jpg";
+import { ballotStore } from "./BallotStore";
 import Candidate from "./Candidate";
 import DistrictHeader from "./DistrictHeader";
-import Endorser from "./Endorser";
-import Header from "./Header";
-import appleby from "./img/candidates/appleby.jpg";
+import EndorserFilterBar from "./EndorserFilterBar";
+import EndorserGrid from "./EndorserGrid";
 import RaceHeader from "./RaceHeader";
 import Sponsors from "./Sponsors";
 import Step1Header from "./Step1Header";
@@ -22,22 +23,21 @@ class Ballot extends React.Component {
       party: "PARTYYY",
       userNames: "What goes here"
     };
+    const demoEndorser = {
+      description: "The Seattle Times",
+      endorserId: "1234",
+      endorserImg: "",
+      endorserUrl: "http://www.google.com",
+      endorserUrlText: "The Seattle Times"
+    }
+    ballotStore.addEndorser(demoEndorser);
 
     return (
       <div>
         <Header />
         <Step1Header />
-        <div className="endorsersBG">
-          <div className="endorsers">
-            <Endorser
-              description="The Seattle Times"
-              endorserId="1234"
-              endorserImg=""
-              endorserUrl="http://www.google.com"
-              endorserUrlText="The Seattle Times"
-            />
-          </div>
-        </div>
+        <EndorserFilterBar ballotStore={ballotStore}/>
+        <EndorserGrid ballotStore={ballotStore} />
 
         <DistrictHeader districtName="Test District" />
         <RaceHeader raceName="Test Race" />

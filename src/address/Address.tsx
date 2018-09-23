@@ -1,9 +1,9 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+
+import rsvLogo from "../img/rsvLogo-new.svg";
+import warningImg from '../img/warning.svg';
 import { addressStore } from "./AddressStore";
-import "./App.css";
-import rsvLogo from "./img/rsvLogo-new.svg";
-import warningImg from './img/warning.svg';
 
 class Address extends React.Component<RouteComponentProps> {
   private addressStore = addressStore;

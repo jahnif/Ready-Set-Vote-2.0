@@ -1,5 +1,4 @@
 import * as React from "react";
-import "./App.css";
 
 class Step1Header extends React.Component {
   public render() {

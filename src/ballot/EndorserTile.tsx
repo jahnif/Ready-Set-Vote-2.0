@@ -1,13 +1,6 @@
 import * as React from 'react';
-import './css/ml.css';
-
-interface IEndorser {
-    description: string,
-    endorserId: string,
-    endorserImg: string,
-    endorserUrl: string,
-    endorserUrlText: string
-}
+import '../css/ml.css';
+import { IEndorser } from './Endorser';
 
 class Endorser extends React.Component<IEndorser> {
     public render() {

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Address from './Address';
+import Address from './address/Address';
 import './App.css';
-import Ballot from './Ballot';
+import Ballot from './ballot/Ballot';
 import Footer from './Footer';
 import Welcome from './Welcome';
 

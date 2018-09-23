@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './css/ml.css';
+import '../css/ml.css';
 
 interface IRaceName {
     raceName: string
