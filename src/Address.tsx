@@ -39,6 +39,7 @@ class Address extends React.Component<RouteComponentProps> {
   }
     
   private onSubmit = () => {
+    // Submit info to API and on success redirect to next page
     this.props.history.push(`/ballot`);
   }
 }

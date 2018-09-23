@@ -1,7 +1,7 @@
 import * as React from "react";
 import "./App.css";
 
-class CallToAction extends React.Component {
+class Step1Header extends React.Component {
   public render() {
     return (
       <div className="main">
@@ -16,4 +16,4 @@ class CallToAction extends React.Component {
   }
 }
 
-export default CallToAction;
+export default Step1Header;
