@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import rsvLogo from "./img/rsvLogo-new.svg";
+import rsvLogo from "../img/rsvLogo-new.svg";
 
 class Welcome extends React.Component<RouteComponentProps> {
     public render() {

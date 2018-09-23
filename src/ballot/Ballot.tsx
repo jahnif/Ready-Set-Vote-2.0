@@ -5,12 +5,13 @@ import appleby from "../img/candidates/appleby.jpg";
 import { ballotStore } from "./BallotStore";
 import Candidate from "./Candidate";
 import DistrictHeader from "./DistrictHeader";
-import EndorserFilterBar from "./EndorserFilterBar";
+import EndOfBallotInput from "./EndOfBallotInput";
 import EndorserGrid from "./EndorserGrid";
 import { EndorserStore } from "./EndorserStore";
 import RaceHeader from "./RaceHeader";
 import Sponsors from "./Sponsors";
 import Step1Header from "./Step1Header";
+import Step2Header from "./Step2Header";
 
 class Ballot extends React.Component {
   public render() {
@@ -44,14 +45,17 @@ class Ballot extends React.Component {
       <div>
         <Header />
         <Step1Header />
-        <EndorserFilterBar ballotStore={ballotStore}/>
         <EndorserGrid ballotStore={ballotStore} />
 
+        <Step2Header />
         <DistrictHeader districtName="Test District" />
         <RaceHeader raceName="Test Race" />
         <div className="seats">
           <Candidate candidate={demoCandidate} />
         </div>
+
+        <EndOfBallotInput />
+
         <Sponsors
           sponsors={[
             {
