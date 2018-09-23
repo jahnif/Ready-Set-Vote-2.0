@@ -7,6 +7,7 @@ import Candidate from "./Candidate";
 import DistrictHeader from "./DistrictHeader";
 import EndorserFilterBar from "./EndorserFilterBar";
 import EndorserGrid from "./EndorserGrid";
+import { EndorserStore } from "./EndorserStore";
 import RaceHeader from "./RaceHeader";
 import Sponsors from "./Sponsors";
 import Step1Header from "./Step1Header";
@@ -23,13 +24,14 @@ class Ballot extends React.Component {
       party: "PARTYYY",
       userNames: "What goes here"
     };
-    const demoEndorser = {
-      description: "The Seattle Times",
-      endorserId: "1234",
-      endorserImg: "",
-      endorserUrl: "http://www.google.com",
-      endorserUrlText: "The Seattle Times"
-    }
+
+    const demoEndorser = new EndorserStore();
+    demoEndorser.description = "The Seattle Times";
+    demoEndorser.endorserId = "1234";
+    demoEndorser.endorserImg = "";
+    demoEndorser.endorserUrl = "http://www.google.com";
+    demoEndorser.endorserUrlText = "The Seattle Times";
+    demoEndorser.selected = false;
     ballotStore.addEndorser(demoEndorser);
 
     return (

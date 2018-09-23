@@ -1,16 +1,27 @@
 import { action, computed, observable } from "mobx";
-import { IEndorser } from "./Endorser";
+import { EndorserStore } from "./EndorserStore";
 
 export class BallotStore {
-  @observable public endorsers: IEndorser[] = [];
-  private endorsersPicked: number = 0;
+  @observable
+  public endorsers: EndorserStore[] = [];
+
   @computed
   get endorsersSelectedString() {
-    return `${this.endorsersPicked} out of ${this.endorsers.length}`;
+    const selected = this.selectedEndorsers.length;
+    const total = this.endorsers.length;
+    if (selected === total) {
+      return "All";
+    }
+    return `${selected} out of ${total}`;
+  }
+
+  @computed
+  get selectedEndorsers() {
+    return this.endorsers.filter(e => e.selected);
   }
 
   @action
-  public addEndorser(endorser: IEndorser) {
+  public addEndorser(endorser: EndorserStore) {
     this.endorsers.push(endorser);
   }
 }

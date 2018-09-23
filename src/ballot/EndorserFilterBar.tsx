@@ -1,10 +1,12 @@
+import { observer } from "mobx-react";
 import * as React from "react";
-import {BallotStore} from "./BallotStore";
+import { BallotStore } from "./BallotStore";
 
 interface IProps {
   ballotStore: BallotStore
 }
 
+@observer
 class EndorserFilterBar extends React.Component<IProps> {
   public render() {
     const { ballotStore } = this.props

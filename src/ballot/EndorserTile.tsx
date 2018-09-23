@@ -1,21 +1,25 @@
+import { observer } from 'mobx-react';
 import * as React from 'react';
 import '../css/ml.css';
-import { IEndorser } from './Endorser';
+import { EndorserStore } from './EndorserStore';
 
-class Endorser extends React.Component<IEndorser> {
+@observer
+class EndorserTile extends React.Component<{endorserStore: EndorserStore}> {
     public render() {
+        const { endorserStore } = this.props;
+        const endorserClasses = endorserStore.selected ? "endorser endorser-selected" :  "endorser";
         return (
-            <div className="endorser" id={this.props.endorserId}>
+            <div className={endorserClasses} id={endorserStore.endorserId}>
 				<div>
-                    <img src={this.props.endorserImg} className="endLogo" />
-                        <div className="endorser-desc">{this.props.description}</div>
+                    <img src={endorserStore.endorserImg} className="endLogo" />
+                        <div className="endorser-desc">{endorserStore.description}</div>
 				
-                        <a href={this.props.endorserUrl} target="_blank" className="endorser-URL">{this.props.endorserUrlText}</a>
+                        <a href={endorserStore.endorserUrl} target="_blank" className="endorser-URL">{endorserStore.endorserUrlText}</a>
 				</div>
-				<button className="endorser-select">Add</button>
+				<button className="endorser-select" onClick={endorserStore.selectEndorser}>Add</button>
 			</div>
         );
     }
 }
 
-export default Endorser;
+export default EndorserTile;

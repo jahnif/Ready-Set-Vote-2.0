@@ -16,11 +16,7 @@ class EndorserGrid extends React.Component<IProps> {
             return (
               <div key={e.endorserId}>
                 <EndorserTile
-                  description={e.description}
-                  endorserId={e.endorserId}
-                  endorserImg={e.endorserImg}
-                  endorserUrl={e.endorserUrl}
-                  endorserUrlText={e.endorserUrlText}
+                  endorserStore={e}
                 />
               </div>
             );
