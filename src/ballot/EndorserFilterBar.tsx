@@ -24,8 +24,8 @@ class EndorserFilterBar extends React.Component<IProps> {
                 <span>{ballotStore.endorsersSelectedString}</span>
               </strong>
             </div>
-            <div className="select-all" id="pick">
-              Select <span id="none-or-all">None</span>
+            <div className="select-all" id="pick" onClick={ballotStore.selectAll}>
+              Select <span>{ballotStore.selectedEndorsers.length === 0 ? "All" : "None"}</span>
             </div>
             <a href="#step1" className="select-all" id="change">
               Change Organizations

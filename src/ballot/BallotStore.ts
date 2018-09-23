@@ -9,6 +9,9 @@ export class BallotStore {
   get endorsersSelectedString() {
     const selected = this.selectedEndorsers.length;
     const total = this.endorsers.length;
+    if (selected === 0) {
+      return "None";
+    }
     if (selected === total) {
       return "All";
     }
@@ -23,6 +26,11 @@ export class BallotStore {
   @action
   public addEndorser(endorser: EndorserStore) {
     this.endorsers.push(endorser);
+  }
+
+  @action
+  public selectAll = () => {
+    this.endorsers.map((e) => e.selectEndorser());
   }
 }
 

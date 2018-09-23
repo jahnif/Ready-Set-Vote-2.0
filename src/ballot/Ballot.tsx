@@ -26,13 +26,21 @@ class Ballot extends React.Component {
     };
 
     const demoEndorser = new EndorserStore();
-    demoEndorser.description = "The Seattle Times";
+    demoEndorser.description = "The Seattle Times provides local news, sports, business, politics, entertainment, travel, restaurants and opinion for Seattle and the Pacific Northwest";
     demoEndorser.endorserId = "1234";
     demoEndorser.endorserImg = "";
-    demoEndorser.endorserUrl = "http://www.google.com";
-    demoEndorser.endorserUrlText = "The Seattle Times";
-    demoEndorser.selected = false;
+    demoEndorser.endorserUrl = "https://www.seattletimes.com/opinion/the-seattle-times-endorsements-for-the-november-7-2017-election/";
+    demoEndorser.endorserUrlText = "seattletimes.com";
+    demoEndorser.selected = true;
     ballotStore.addEndorser(demoEndorser);
+    const demoEndorser2 = new EndorserStore();
+    demoEndorser2.description = "The Stranger is Seattle's free weekly alternative arts and culture newspaper";
+    demoEndorser2.endorserId = "5678";
+    demoEndorser2.endorserImg = "";
+    demoEndorser2.endorserUrl = "http://thestranger.com/features/2017/10/11/25459963/the-strangers-endorsements-for-the-november-7-2017-general-election";
+    demoEndorser2.endorserUrlText = "thestranger.com";
+    demoEndorser2.selected = true;
+    ballotStore.addEndorser(demoEndorser2);
 
     return (
       <div>
