@@ -25,21 +25,19 @@ class Ballot extends React.Component {
       userNames: "What goes here"
     };
 
-    const demoEndorser = new EndorserStore();
-    demoEndorser.description = "The Seattle Times provides local news, sports, business, politics, entertainment, travel, restaurants and opinion for Seattle and the Pacific Northwest";
-    demoEndorser.endorserId = "1234";
-    demoEndorser.endorserImg = "";
-    demoEndorser.endorserUrl = "https://www.seattletimes.com/opinion/the-seattle-times-endorsements-for-the-november-7-2017-election/";
-    demoEndorser.endorserUrlText = "seattletimes.com";
-    demoEndorser.selected = true;
+    const demoEndorser = new EndorserStore(
+      "The Seattle Times provides local news, sports, business, politics, entertainment, travel, restaurants and opinion for Seattle and the Pacific Northwest",
+      "1234", "favicon.ico",
+      "https://www.seattletimes.com/opinion/the-seattle-times-endorsements-for-the-november-7-2017-election/",
+      "seattletimes.com"
+    );
     ballotStore.addEndorser(demoEndorser);
-    const demoEndorser2 = new EndorserStore();
-    demoEndorser2.description = "The Stranger is Seattle's free weekly alternative arts and culture newspaper";
-    demoEndorser2.endorserId = "5678";
-    demoEndorser2.endorserImg = "";
-    demoEndorser2.endorserUrl = "http://thestranger.com/features/2017/10/11/25459963/the-strangers-endorsements-for-the-november-7-2017-general-election";
-    demoEndorser2.endorserUrlText = "thestranger.com";
-    demoEndorser2.selected = true;
+    const demoEndorser2 = new EndorserStore(
+      "The Stranger is Seattle's free weekly alternative arts and culture newspaper",
+      "5678", "favicon.ico",
+      "http://thestranger.com/features/2017/10/11/25459963/the-strangers-endorsements-for-the-november-7-2017-general-election",
+      "thestranger.com"
+    );
     ballotStore.addEndorser(demoEndorser2);
 
     return (

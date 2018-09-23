@@ -30,7 +30,12 @@ export class BallotStore {
 
   @action
   public selectAll = () => {
-    this.endorsers.map((e) => e.selectEndorser());
+    this.endorsers.map((e) => e.setSelected(true));
+  }
+
+  @action
+  public selectNone = () => {
+    this.endorsers.map((e) => e.setSelected(false));
   }
 }
 

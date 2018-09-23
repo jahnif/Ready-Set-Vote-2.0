@@ -3,13 +3,13 @@ import * as React from "react";
 import { BallotStore } from "./BallotStore";
 
 interface IProps {
-  ballotStore: BallotStore
+  ballotStore: BallotStore;
 }
 
 @observer
 class EndorserFilterBar extends React.Component<IProps> {
   public render() {
-    const { ballotStore } = this.props
+    const { ballotStore } = this.props;
     return (
       <div
         id="sticky-wrapper"
@@ -24,9 +24,15 @@ class EndorserFilterBar extends React.Component<IProps> {
                 <span>{ballotStore.endorsersSelectedString}</span>
               </strong>
             </div>
-            <div className="select-all" id="pick" onClick={ballotStore.selectAll}>
-              Select <span>{ballotStore.selectedEndorsers.length === 0 ? "All" : "None"}</span>
-            </div>
+            {ballotStore.selectedEndorsers.length === 0 ? (
+              <div className="select-all" id="pick" onClick={ballotStore.selectAll}>
+                Select <span>All</span>
+              </div>
+            ) : (
+              <div className="select-all" id="pick" onClick={ballotStore.selectNone}>
+                Select <span>None</span>
+              </div>
+            )}
             <a href="#step1" className="select-all" id="change">
               Change Organizations
             </a>
