@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BallotStore } from "./BallotStore";
-import EndorserFilterBar from "./EndorserFilterBar";
+import EndorserStatusBar from "./EndorserStatusBar";
 import EndorserTile from "./EndorserTile";
 
 interface IProps {
@@ -12,7 +12,7 @@ class EndorserGrid extends React.Component<IProps> {
     const { ballotStore } = this.props;
     return (
       <div>
-        <EndorserFilterBar ballotStore={ballotStore} />
+        <EndorserStatusBar ballotStore={ballotStore} />
         <div className="endorsersBG">
           <div className="endorsers">
             {ballotStore.endorsers.map(e => {
