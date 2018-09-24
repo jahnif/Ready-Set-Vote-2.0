@@ -4,6 +4,7 @@ import Header from "../Header";
 import appleby from "../img/candidates/appleby.jpg";
 import { ballotStore } from "./BallotStore";
 import Candidate from "./Candidate";
+import { CandidateStore } from "./CandidateStore";
 import DistrictHeader from "./DistrictHeader";
 import EndOfBallotInput from "./EndOfBallotInput";
 import EndorserGrid from "./EndorserGrid";
@@ -38,17 +39,6 @@ class Ballot extends React.Component {
   };
 
   public render() {
-    const demoCandidate = {
-      candidateId: "testId",
-      candidateName: "Marty McPolitican",
-      candidateUrl: "http://www.google.com",
-      candidateUrlText: "My super cool website",
-      imgSrc: appleby,
-      municipalLeagueRating: "Amazinggggggggg",
-      party: "PARTYYY",
-      userNames: "What goes here"
-    };
-
     return (
       <div>
         <Header />
@@ -59,18 +49,24 @@ class Ballot extends React.Component {
         <DistrictHeader districtName="State" />
         <RaceHeader raceName="Legislative District 37 State Senator" />
         <div className="seats">
-          <Candidate candidate={demoCandidate} />
+          {ballotStore.candidates.map(c => {
+            return (
+              <div key={c.candidateId}>
+                <Candidate candidate={c} />
+              </div>
+            );
+          })}
         </div>
 
         <div className="main">
           <DistrictHeader districtName="Measures" />
           {ballotStore.measures.map(m => {
-              return (
-                <div key={m.measureTitle}>
-                  <Measure measure={m}/>
-                </div>
-              );
-            })}
+            return (
+              <div key={m.measureTitle}>
+                <Measure measure={m} />
+              </div>
+            );
+          })}
         </div>
         <EndOfBallotInput />
 
@@ -105,6 +101,16 @@ class Ballot extends React.Component {
     ballotStore.addEndorser(demoEndorser2);
     const demoMeasure = new MeasureStore();
     ballotStore.addMeasure(demoMeasure);
+    const demoCandidate = new CandidateStore();
+    demoCandidate.candidateId = "testId";
+    demoCandidate.candidateName = "Rebecca Saldaña";
+    demoCandidate.candidateUrl = "http://www.google.com";
+    demoCandidate.candidateUrlText = "My super cool website";
+    demoCandidate.imgSrc = appleby;
+    demoCandidate.municipalLeagueRating = "Amazinggggggggg";
+    demoCandidate.party = "PREFERS DEMOCRATIC PARTY";
+    demoCandidate.userNames = "What goes here";
+    ballotStore.addCandidate(demoCandidate);
   }
 }
 

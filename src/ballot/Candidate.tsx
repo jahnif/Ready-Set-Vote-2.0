@@ -1,21 +1,11 @@
 import * as React from 'react';
 import '../css/ml.css';
 
+import { CandidateStore } from './CandidateStore';
 import EndorserList from './EndorserList';
 
 interface ICandidateProps {
-    candidate: ICandidate
-}
-
-interface ICandidate {
-    candidateId: string,
-    imgSrc: string,
-    party: string,
-    candidateName: string,
-    candidateUrl: string,
-    candidateUrlText: string,
-    userNames: string,
-    municipalLeagueRating: string
+    candidate: CandidateStore
 }
 
 class Candidate extends React.Component<ICandidateProps> {

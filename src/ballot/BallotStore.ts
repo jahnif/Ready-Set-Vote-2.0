@@ -1,4 +1,5 @@
 import { action, computed, observable } from "mobx";
+import { CandidateStore } from "./CandidateStore";
 import { EndorserStore } from "./EndorserStore";
 import { MeasureStore } from "./MeasureStore";
 
@@ -26,6 +27,12 @@ export class BallotStore {
   public percentComplete: number = 0;
   @observable
   public measures: MeasureStore[] = [];
+  @observable
+  public candidates: CandidateStore[] = [];
+
+  public addCandidate(candidate: CandidateStore) {
+    this.candidates.push(candidate);
+  }
 
   @action
   public addMeasure(measure: MeasureStore) {
