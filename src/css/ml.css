@@ -547,7 +547,7 @@ font-size: 2rem;
     /* something needs to go on here to prevent the fixed header on mobile from overlapping. but this selector does things to all the .firstCandidate seats */
 }
 
-.seats {
+.seats, #marker {
     /* width: 95%; */
     margin: 0 auto 100px auto;
     display: flex;

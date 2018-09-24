@@ -1,37 +1,26 @@
 import * as React from 'react';
-import './css/ml.css';
 
 import EndorserList from './EndorserList';
 import MeasureChoice from './MeasureChoice';
+import { MeasureStore } from './MeasureStore';
 
 interface IMeasureProps {
-    data: IMeasure
-}
-
-interface IMeasure {
-    measureDescription: string,
-    measureName: string,
-    measureTitle: string
-    yesChoiceLink: string,
-    measureChoiceEndorsement: string,
-    yesChoiceText: string,
-    yesMeasureEndorser: string,
-    municipalLeaugeRecommendation: string
+    measure: MeasureStore
 }
 
 class Measure extends React.Component<IMeasureProps> {
     public render() {
         return (
             <div className="measure">
-                <div className="measure-name">{this.props.data.measureName}</div>
-                <div className="measure-title">{this.props.data.measureTitle}</div>
-                <div className="measure-desc">{this.props.data.measureDescription}</div>
+                <div className="measure-name">{this.props.measure.measureName}</div>
+                <div className="measure-title">{this.props.measure.measureTitle}</div>
+                <div className="measure-desc">{this.props.measure.measureDescription}</div>
                 <div className="measure-choices">
                     <div className="measure-choice" id={"1"/* TODO Measure ID*/}>
-                        <a href={this.props.data.yesChoiceLink} target="_blank" className="measure-link">{this.props.data.yesChoiceText}</a>
+                        <a href={this.props.measure.yesChoiceLink} target="_blank" className="measure-link">{this.props.measure.yesChoiceText}</a>
                         <button className="measure-select" >Yes</button>
                         <span className="measure-endorsedBy-head">Endorsed By:</span>
-                        <a className='endlink endlink' href={this.props.data.measureChoiceEndorsement} target='_blank'>{this.props.data.yesMeasureEndorser}</a>
+                        <a className='endlink endlink' href={this.props.measure.measureChoiceEndorsement} target='_blank'>{this.props.measure.yesMeasureEndorser}</a>
                         <EndorserList endorserList={[{ url: 'http://www.google.com', text: 'Test Endorsement' }]} />
                         <MeasureChoice
                             endorserUrl="http://www.google.com"
@@ -42,7 +31,7 @@ class Measure extends React.Component<IMeasureProps> {
                     </div>
                 </div>
                 <div className="measure-ml">
-                    Municipal League Recommends: <span>{this.props.data.municipalLeaugeRecommendation}</span>
+                    Municipal League Recommends: <span>{this.props.measure.municipalLeaugeRecommendation}</span>
                 </div>
             </div>
         );

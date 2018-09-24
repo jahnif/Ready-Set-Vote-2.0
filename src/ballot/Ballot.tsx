@@ -8,12 +8,19 @@ import DistrictHeader from "./DistrictHeader";
 import EndOfBallotInput from "./EndOfBallotInput";
 import EndorserGrid from "./EndorserGrid";
 import { EndorserStore } from "./EndorserStore";
+import Measure from "./Measure";
+import { MeasureStore } from "./MeasureStore";
 import RaceHeader from "./RaceHeader";
 import Sponsors from "./Sponsors";
 import Step1Header from "./Step1Header";
 import Step2Header from "./Step2Header";
 
 class Ballot extends React.Component {
+  constructor(props: any) {
+    super(props);
+    this.injectDemoData();
+  }
+
   public componentDidMount() {
     window.addEventListener("scroll", this.handleScroll);
   }
@@ -28,7 +35,7 @@ class Ballot extends React.Component {
       document.body.getBoundingClientRect().height - window.innerHeight;
     const percentComplete = Number(((top / height) * 100).toFixed(1));
     ballotStore.setPercentComplete(percentComplete);
-  }
+  };
 
   public render() {
     const demoCandidate = {
@@ -42,6 +49,44 @@ class Ballot extends React.Component {
       userNames: "What goes here"
     };
 
+    return (
+      <div>
+        <Header />
+        <Step1Header />
+        <EndorserGrid ballotStore={ballotStore} />
+
+        <Step2Header />
+        <DistrictHeader districtName="State" />
+        <RaceHeader raceName="Legislative District 37 State Senator" />
+        <div className="seats">
+          <Candidate candidate={demoCandidate} />
+        </div>
+
+        <div className="main">
+          <DistrictHeader districtName="Measures" />
+          {ballotStore.measures.map(m => {
+              return (
+                <div key={m.measureTitle}>
+                  <Measure measure={m}/>
+                </div>
+              );
+            })}
+        </div>
+        <EndOfBallotInput />
+
+        <Sponsors
+          sponsors={[
+            {
+              altText: "Seattle Seahawks",
+              imgSrc: "https://readysetvote.org/img/sponsor_seahawks.gif"
+            }
+          ]}
+        />
+      </div>
+    );
+  }
+
+  private injectDemoData() {
     const demoEndorser = new EndorserStore(
       "The Seattle Times provides local news, sports, business, politics, entertainment, travel, restaurants and opinion for Seattle and the Pacific Northwest",
       "1234",
@@ -58,32 +103,8 @@ class Ballot extends React.Component {
       "thestranger.com"
     );
     ballotStore.addEndorser(demoEndorser2);
-
-    return (
-      <div>
-        <Header />
-        <Step1Header />
-        <EndorserGrid ballotStore={ballotStore} />
-
-        <Step2Header />
-        <DistrictHeader districtName="Test District" />
-        <RaceHeader raceName="Test Race" />
-        <div className="seats">
-          <Candidate candidate={demoCandidate} />
-        </div>
-
-        <EndOfBallotInput />
-
-        <Sponsors
-          sponsors={[
-            {
-              altText: "Seattle Seahawks",
-              imgSrc: "https://readysetvote.org/img/sponsor_seahawks.gif"
-            }
-          ]}
-        />
-      </div>
-    );
+    const demoMeasure = new MeasureStore();
+    ballotStore.addMeasure(demoMeasure);
   }
 }
 

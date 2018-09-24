@@ -12,7 +12,7 @@ export class EndorserStore {
   @observable
   public endorserUrlText: string;
   @observable
-  public selected: boolean;
+  public selected: boolean = true;
 
   constructor(
     description: string = "",
