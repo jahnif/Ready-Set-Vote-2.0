@@ -15,17 +15,18 @@ import Step2Header from "./Step2Header";
 
 class Ballot extends React.Component {
   public componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
+    window.addEventListener("scroll", this.handleScroll);
   }
 
   public componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
+    window.removeEventListener("scroll", this.handleScroll);
   }
 
-  public handleScroll(): void {
+  public handleScroll = (event: UIEvent) => {
     const top = window.scrollY;
-    const height = document.body.getBoundingClientRect().height - window.innerHeight;
-    const percentComplete = Math.ceil( top / height * 100 );
+    const height =
+      document.body.getBoundingClientRect().height - window.innerHeight;
+    const percentComplete = Number(((top / height) * 100).toFixed(1));
     ballotStore.setPercentComplete(percentComplete);
   }
 
@@ -43,14 +44,16 @@ class Ballot extends React.Component {
 
     const demoEndorser = new EndorserStore(
       "The Seattle Times provides local news, sports, business, politics, entertainment, travel, restaurants and opinion for Seattle and the Pacific Northwest",
-      "1234", "favicon.ico",
+      "1234",
+      "favicon.ico",
       "https://www.seattletimes.com/opinion/the-seattle-times-endorsements-for-the-november-7-2017-election/",
       "seattletimes.com"
     );
     ballotStore.addEndorser(demoEndorser);
     const demoEndorser2 = new EndorserStore(
       "The Stranger is Seattle's free weekly alternative arts and culture newspaper",
-      "5678", "favicon.ico",
+      "5678",
+      "favicon.ico",
       "http://thestranger.com/features/2017/10/11/25459963/the-strangers-endorsements-for-the-november-7-2017-general-election",
       "thestranger.com"
     );
