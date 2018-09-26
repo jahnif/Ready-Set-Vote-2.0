@@ -622,7 +622,7 @@ font-size: 2rem;
     line-height: 1.7em;
 }
 
-.mlRating span {
+.mlRating .rating-text {
     color: #1f3f90;
     background: url(../img/info.svg) 100% 50% no-repeat;
     background-size: 12px;
@@ -630,7 +630,7 @@ font-size: 2rem;
     cursor: pointer;
 }
 
-.no-touch .mlRating span:hover {
+.no-touch .mlRating .rating-text:hover {
     color: #3c91ff;
 }
 
@@ -729,6 +729,8 @@ font-size: 2rem;
 .rating-overlay {
     background: rgba(8, 59, 125, 0.97);
     position: fixed;
+    left: 0;
+    top: 0;
     z-index: 199999;
     width: 100%;
     height: 100%;
@@ -740,7 +742,6 @@ font-size: 2rem;
 }
 
 .rating {
-    display: none;
     color: #fff;
     width: 290px;
     font-size: 1.6rem;
@@ -748,7 +749,7 @@ font-size: 2rem;
     font-family: "Roboto", sans-serif;
 }
 
-.rating span {
+.rating .overlay-title {
     font-family: "Roboto Slab", serif;
     color: #4FFAE0;
     display: block;

@@ -16,7 +16,9 @@ export class CandidateStore {
   @observable
   public userNames: string;
   @observable
-  public municipalLeagueRating: string;
+  public municipalLeagueRating: number;
+  @observable
+  public municipalLeagueRatingText: string;
 }
 
 export const candidateStore = new CandidateStore();

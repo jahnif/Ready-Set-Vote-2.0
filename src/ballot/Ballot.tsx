@@ -107,7 +107,8 @@ class Ballot extends React.Component {
     demoCandidate.candidateUrl = "http://www.google.com";
     demoCandidate.candidateUrlText = "My super cool website";
     demoCandidate.imgSrc = appleby;
-    demoCandidate.municipalLeagueRating = "Amazinggggggggg";
+    demoCandidate.municipalLeagueRating = 4;
+    demoCandidate.municipalLeagueRatingText = "Outstanding";
     demoCandidate.party = "PREFERS DEMOCRATIC PARTY";
     demoCandidate.userNames = "What goes here";
     ballotStore.addCandidate(demoCandidate);
