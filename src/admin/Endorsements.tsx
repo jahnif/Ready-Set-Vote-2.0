@@ -1,6 +1,6 @@
 import * as React from "react";
 import Dropdown from "react-dropdown"
-import 'react-dropdown/style.css';
+import 'react-dropdown/style.css'
 ;
 
 class Endorsements extends React.Component {
@@ -10,7 +10,7 @@ class Endorsements extends React.Component {
 
   public onSubmit = (event: any): void => {
     event.preventDefault();
-    // functionality later
+    // TODO: functionality later
     return;
   }
 
@@ -19,8 +19,8 @@ class Endorsements extends React.Component {
     const options = ['The Seattle Times', 'The Stranger', 'King County Democrats'];
 
     return(
-      <div>
-        <h1>Endorsements</h1>
+      <div className="dashboard-right">
+        <div className="dashboard-item">Endorsements</div>
         <Dropdown options={options} onChange={this.onSubmit} placeholder="Choose a Publication" />
       </div>
     )
