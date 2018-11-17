@@ -16,6 +16,7 @@ import Sponsors from "./Sponsors";
 import Step1Header from "./Step1Header";
 import Step2Header from "./Step2Header";
 
+
 class Ballot extends React.Component {
   constructor(props: any) {
     super(props);
@@ -100,6 +101,10 @@ class Ballot extends React.Component {
     );
     ballotStore.addEndorser(demoEndorser2);
     const demoMeasure = new MeasureStore();
+    demoMeasure.measureName = "Fake measure" ;
+    demoMeasure.measureTitle = "A title" ;
+    demoMeasure.yesChoiceLink = "Yes" ;
+    demoMeasure.measureDescription = "Nonsense" ; 
     ballotStore.addMeasure(demoMeasure);
     const demoCandidate = new CandidateStore();
     demoCandidate.candidateId = "testId";
