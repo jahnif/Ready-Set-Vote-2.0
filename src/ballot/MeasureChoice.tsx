@@ -1,4 +1,5 @@
 import * as React from 'react';
+import EndorserList from './EndorserList';
 
 interface IMeasureChoice {
     endorserUrl: string,
@@ -16,7 +17,7 @@ class MesaureChoice extends React.Component<IMeasureChoice> {
                 <button className="measure-select measure-select">{this.props.measureChoiceText}</button>
                 <span className="measure-endorsedBy-head">Endorsed By:</span>
                 <a className="endlink endlink" href={this.props.endorserUrl} target='_blank'>{this.props.endorserUrlText}</a>
-                <div className="endorserList">TODO LIST</div>
+                <EndorserList endorserList={[{ url: 'http://www.google.com', text: 'Test Endorsement' }]} />
             </div>
         );
     }
