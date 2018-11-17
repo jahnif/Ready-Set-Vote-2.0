@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import Endorsements from './Endorsements';
 import Links from './Links';
 
 
@@ -12,6 +13,7 @@ class Admin extends React.Component {
     return (
       <div>
         <Links />
+        <Endorsements />
       </div>
 
     )
