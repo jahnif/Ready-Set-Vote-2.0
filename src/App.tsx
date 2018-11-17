@@ -2,6 +2,7 @@ import * as React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 
 import Address from './address/Address';
+import Admin from './admin/Admin'
 import './App.css';
 import Ballot from './ballot/Ballot';
 import "./css/ml.css";
@@ -20,6 +21,7 @@ class App extends React.Component {
           <Route path="/ballot" component={Ballot} />
           <Route path="/email" component={GetEmail} />
           <Route path="/guide" component={Guide} />
+          <Route path="/admin" component={Admin} />
           <Footer />
         </div>
       </Router>
