@@ -5,8 +5,15 @@ frameworkVersion: ">=1.1.0 <2.0.0"
 provider:
   name: aws
   runtime: nodejs8.10
+  stage: dev
+  region: us-west-2
 
 functions:
+  app:
+    handler: server/index.handler
+    events: 
+      - http: ANY /
+      - http: 'ANY {proxy+}'
   sample-data:
     handler: server/sample-data.data
     events:
