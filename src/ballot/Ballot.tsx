@@ -16,6 +16,7 @@ import Sponsors from "./Sponsors";
 import Step1Header from "./Step1Header";
 import Step2Header from "./Step2Header";
 
+import { GetBallotData } from '../services/BallotService';
 
 class Ballot extends React.Component {
   constructor(props: any) {
@@ -84,22 +85,13 @@ class Ballot extends React.Component {
   }
 
   private injectDemoData() {
-    const demoEndorser = new EndorserStore(
-      "The Seattle Times provides local news, sports, business, politics, entertainment, travel, restaurants and opinion for Seattle and the Pacific Northwest",
-      "1234",
-      "favicon.ico",
-      "https://www.seattletimes.com/opinion/the-seattle-times-endorsements-for-the-november-7-2017-election/",
-      "seattletimes.com"
-    );
-    ballotStore.addEndorser(demoEndorser);
-    const demoEndorser2 = new EndorserStore(
-      "The Stranger is Seattle's free weekly alternative arts and culture newspaper",
-      "5678",
-      "favicon.ico",
-      "http://thestranger.com/features/2017/10/11/25459963/the-strangers-endorsements-for-the-november-7-2017-general-election",
-      "thestranger.com"
-    );
-    ballotStore.addEndorser(demoEndorser2);
+    const sampleData = GetBallotData();
+
+    sampleData.endorsers.forEach(value => {
+      const endorser = new EndorserStore(value.description, value.endorserId, value.endorserImg, value.endorserUrl, value.endorserUrlText);
+      ballotStore.addEndorser(endorser);
+    });
+
     const demoMeasure = new MeasureStore();
     demoMeasure.measureName = "Fake measure" ;
     demoMeasure.measureTitle = "A title" ;
