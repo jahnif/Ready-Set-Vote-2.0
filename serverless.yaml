@@ -11,7 +11,7 @@ provider:
 functions:
   app:
     handler: server/index.handler
-    events: 
+    events:
       - http: ANY /
       - http: 'ANY {proxy+}'
   sample-data:
@@ -26,3 +26,5 @@ functions:
       - http:
           method: get
           path: version
+plugins:
+  - serverless-offline
