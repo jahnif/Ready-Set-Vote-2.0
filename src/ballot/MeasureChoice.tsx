@@ -1,5 +1,5 @@
 import * as React from 'react';
-import EndorserList from './EndorserList';
+import EndorserList from './Endorsers/EndorserList';
 
 interface IMeasureChoice {
     endorserUrl: string,

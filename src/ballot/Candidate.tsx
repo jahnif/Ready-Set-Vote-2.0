@@ -1,12 +1,20 @@
 import * as React from 'react';
 import '../css/ml.css';
 
-import { CandidateStore } from './CandidateStore';
-import EndorserList from './EndorserList';
+import EndorserList from './Endorsers/EndorserList';
 import Rating from './Rating';
 
+interface ICandidateData {
+    id: string;
+    image: string;
+    name: string;
+    party: string;
+    url: string;
+    urlText: string;
+}
+
 interface ICandidateProps {
-    candidate: CandidateStore
+    candidate: ICandidateData
 }
 
 interface ICandidateState {
@@ -27,11 +35,11 @@ class Candidate extends React.Component<ICandidateProps, ICandidateState> {
 
     public render() {
         return (
-            <div className="seat" id={this.props.candidate.candidateId}>
-                <img src={this.props.candidate.imgSrc} className="candidate-pic" />
+            <div className="seat" id={this.props.candidate.id}>
+                <img src={this.props.candidate.image} className="candidate-pic" />
                 <div className="seat-party">{this.props.candidate.party}</div>
-                <div className="seat-name">{this.props.candidate.candidateName}</div>
-                <a href={this.props.candidate.candidateUrl} target="_blank" className="seat-url">{this.props.candidate.candidateUrlText}</a>
+                <div className="seat-name">{this.props.candidate.name}</div>
+                <a href={this.props.candidate.url} target="_blank" className="seat-url">{this.props.candidate.urlText}</a>
                 <div className="seat-divider" />
                 <div className="seat-endorsedBy">
                     <EndorserList endorserList={
@@ -41,9 +49,9 @@ class Candidate extends React.Component<ICandidateProps, ICandidateState> {
                         Municipal League Rating:
                         <br />
                         <span className="rating-text">
-                            <a onClick={this.showRating}>{this.props.candidate.municipalLeagueRatingText}</a>
+                            <a onClick={this.showRating}>{/*this.props.candidate.municipalLeagueRatingText*/'TODO'}</a>
                         </span>
-                        { this.state.showRatingDetails && <Rating ratingLevel={this.props.candidate.municipalLeagueRating} hideRatingCallback={this.hideRating} /> }
+                        { this.state.showRatingDetails && <Rating ratingLevel={/*this.props.candidate.municipalLeagueRating*/1} hideRatingCallback={this.hideRating} /> }
                     </div>
                     <button className="seat-select" id="seat-selectIDTODO">Pick</button>
                 </div>

@@ -1,29 +1,4 @@
 export default {
-    "districts": [
-        { 
-            "id": "????",
-            "name": "County",
-            "races": [
-                {
-                    "candidates": [
-                        {
-                            "endorsements": {
-                                "KCD": true,
-                                "MunicipalLeague": "Outstanding",
-                                "SeattleTimes": true
-                            },
-                            "id": 2324234,
-                            "image": "https://readysetvote.org/img/candidates/Dow%20Constantine.jpg",
-                            "name": "Dow Constantine",
-                            "url": "http://dowconstantine.com/"
-                        }
-                    ],
-                    "id": "KCExec",
-                    "name": "King County Executive"
-                }
-            ]
-        }
-    ],
     "endorsers": [
         {
             "description": "The Seattle Times provides local news, sports, business, politics, entertainment, travel, restaurants and opinion for Seattle and the Pacific Northwest",

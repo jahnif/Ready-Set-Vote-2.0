@@ -7,8 +7,8 @@ import Candidate from "./Candidate";
 import { CandidateStore } from "./CandidateStore";
 import DistrictHeader from "./DistrictHeader";
 import EndOfBallotInput from "./EndOfBallotInput";
-import EndorserGrid from "./EndorserGrid";
-import { EndorserStore } from "./EndorserStore";
+import EndorserGrid from "./Endorsers/EndorserGrid";
+import { EndorserStore } from "./Endorsers/EndorserStore";
 import Measure from "./Measure";
 import { MeasureStore } from "./MeasureStore";
 import RaceHeader from "./RaceHeader";
@@ -16,7 +16,7 @@ import Sponsors from "./Sponsors";
 import Step1Header from "./Step1Header";
 import Step2Header from "./Step2Header";
 
-import { GetBallotData } from '../services/BallotService';
+import { GetDistricts, GetEndorsers  } from '../services/Services';
 
 class Ballot extends React.Component {
   constructor(props: any) {
@@ -41,6 +41,8 @@ class Ballot extends React.Component {
   };
 
   public render() {
+    const mockDistrictData = GetDistricts();
+
     return (
       <div>
         <Header />
@@ -48,17 +50,26 @@ class Ballot extends React.Component {
         <EndorserGrid ballotStore={ballotStore} />
 
         <Step2Header />
-        <DistrictHeader districtName="State" />
-        <RaceHeader raceName="Legislative District 37 State Senator" />
-        <div className="seats">
-          {ballotStore.candidates.map(c => {
-            return (
-              <div key={c.candidateId}>
-                <Candidate candidate={c} />
-              </div>
-            );
-          })}
-        </div>
+
+        {mockDistrictData.districts.map(district => {
+          return (
+            <React.Fragment key={district.id}>
+              <DistrictHeader key={district.id} districtName={district.name} />
+              {district.races.map(race => {
+                return (
+                  <div className="seats" key={race.id}>
+                    <RaceHeader raceName={race.name} />
+                    {race.candidates.map(candidate => {
+                      return (
+                        <Candidate key={candidate.id} candidate={candidate} />
+                      );
+                    })}
+                  </div>
+                )
+              })}
+            </React.Fragment>
+          )
+        })}
 
         <div className="main">
           <DistrictHeader districtName="Measures" />
@@ -85,9 +96,9 @@ class Ballot extends React.Component {
   }
 
   private injectDemoData() {
-    const sampleData = GetBallotData();
+    const mockEndorserData = GetEndorsers();
 
-    sampleData.endorsers.forEach(value => {
+    mockEndorserData.endorsers.forEach(value => {
       const endorser = new EndorserStore(value.description, value.endorserId, value.endorserImg, value.endorserUrl, value.endorserUrlText);
       ballotStore.addEndorser(endorser);
     });
