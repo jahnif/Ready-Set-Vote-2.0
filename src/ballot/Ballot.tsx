@@ -16,7 +16,7 @@ import Sponsors from "./Sponsors";
 import Step1Header from "./Step1Header";
 import Step2Header from "./Step2Header";
 
-import { GetDistricts, GetEndorsers  } from '../services/Services';
+import { GetDistricts, GetEndorsers, GetMeasures } from '../services/Services';
 
 class Ballot extends React.Component {
   constructor(props: any) {
@@ -73,10 +73,10 @@ class Ballot extends React.Component {
 
         <div className="main">
           <DistrictHeader districtName="Measures" />
-          {ballotStore.measures.map(m => {
+          {ballotStore.measures.map(measure => {
             return (
-              <div key={m.measureTitle}>
-                <Measure measure={m} />
+              <div key={measure.id}>
+                <Measure measure={measure} />
               </div>
             );
           })}
@@ -97,18 +97,22 @@ class Ballot extends React.Component {
 
   private injectDemoData() {
     const mockEndorserData = GetEndorsers();
+    const mockMeasureData = GetMeasures();
 
     mockEndorserData.endorsers.forEach(value => {
       const endorser = new EndorserStore(value.description, value.endorserId, value.endorserImg, value.endorserUrl, value.endorserUrlText);
       ballotStore.addEndorser(endorser);
     });
 
-    const demoMeasure = new MeasureStore();
-    demoMeasure.measureName = "Fake measure" ;
-    demoMeasure.measureTitle = "A title" ;
-    demoMeasure.yesChoiceLink = "Yes" ;
-    demoMeasure.measureDescription = "Nonsense" ; 
-    ballotStore.addMeasure(demoMeasure);
+    
+    mockMeasureData.measures.forEach(measure => {
+      const demoMeasure = new MeasureStore();
+      demoMeasure.name = measure.name;
+      demoMeasure.title = measure.title;
+      demoMeasure.description = measure.description;
+      demoMeasure.choices = measure.choices;
+      ballotStore.addMeasure(demoMeasure)
+    });
     const demoCandidate = new CandidateStore();
     demoCandidate.candidateId = "testId";
     demoCandidate.candidateName = "Rebecca Saldaña";
