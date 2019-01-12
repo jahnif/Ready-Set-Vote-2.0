@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react';
 import * as React from 'react';
-import '../css/ml.css';
+import '../../css/ml.css';
 import { EndorserStore } from './EndorserStore';
 
 @observer

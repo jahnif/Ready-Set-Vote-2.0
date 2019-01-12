@@ -1,22 +1,19 @@
 import { observable } from "mobx";
+import { IMeasureChoices } from "./MeasureChoice";
 
 export class MeasureStore {
   @observable
-  public measureDescription: string;
+  public id: string;
   @observable
-  public measureName: string;
+  public description: string;
   @observable
-  public measureTitle: string;
+  public name: string;
   @observable
-  public yesChoiceLink: string;
+  public title: string;
   @observable
-  public measureChoiceEndorsement: string;
-  @observable
-  public yesChoiceText: string;
-  @observable
-  public yesMeasureEndorser: string;
-  @observable
-  public municipalLeaugeRecommendation: string;
+  public choices: IMeasureChoices;
+  // @observable
+  // public municipalLeaugeRecommendation: string;
 }
 
 export const measureStore = new MeasureStore();

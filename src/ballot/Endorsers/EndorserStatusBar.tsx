@@ -1,7 +1,7 @@
 import { observer } from "mobx-react";
 import * as React from "react";
 import * as Sticky from "react-stickynode";
-import { BallotStore } from "./BallotStore";
+import { BallotStore } from "../BallotStore";
 
 interface IProps {
   ballotStore: BallotStore;

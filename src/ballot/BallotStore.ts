@@ -1,6 +1,6 @@
 import { action, computed, observable } from "mobx";
 import { CandidateStore } from "./CandidateStore";
-import { EndorserStore } from "./EndorserStore";
+import { EndorserStore } from "./Endorsers/EndorserStore";
 import { MeasureStore } from "./MeasureStore";
 
 export class BallotStore {
