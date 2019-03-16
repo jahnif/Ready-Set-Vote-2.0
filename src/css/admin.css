@@ -1,0 +1,362 @@
+@charset "UTF-8";
+/* CSS Document */
+
+@import url("https://fonts.googleapis.com/css?family=Oswald:500,400,300|Roboto:400,300,500,700");
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td {	margin: 0;	padding: 0;	border: 0;	outline: 0;	font-size: 100%; vertical-align: baseline; background: transparent }
+body { line-height: 1 } ol, ul { list-style: none } blockquote, q { quotes: none } blockquote:before, blockquote:after, q:before, q:after { 	content: ''; content: none } :focus { outline: 0 } ins { text-decoration: none } del { text-decoration: line-through } table { border-collapse: collapse; border-spacing: 0 }
+.clearfix:after{clear:both;content:'.';display:block;visibility:hidden;height:0}
+.clearfix{display:inline-block}* html .clearfix{height:1%}.clearfix{display:block}
+img { display: block }
+
+*, *:before, *:after { box-sizing: border-box; }
+
+/*http://snook.ca/archives/html_and_css/font-size-with-rem*/
+html {
+	-webkit-text-size-adjust: 100%;
+	font-size: 62.5%;
+	-webkit-font-smoothing: antialiased;
+}
+
+body {
+	font-family: "Roboto", sans-serif;	/*SemiBold=500, Bold=700, */
+	font-size: 1.6rem;
+	border-top: 8px solid #33388c;
+}
+
+section {
+	max-width: 1100px;
+	width: 90%;
+	margin: 0 auto;
+}
+
+.login {
+	width: 500px;
+	margin: 0 auto;
+}
+
+.logoTop {
+	height: 80px;
+	background: url(/img/torch.gif) 100% 0 no-repeat;
+	margin: 10px 0 30px 0;
+	border-bottom: 2px solid #33388c;
+	display: flex;
+	align-items: flex-end;
+	padding-bottom: 1em;
+}
+
+.logoTop a {
+	text-decoration: none;
+	color: #900;
+}
+
+.logoTop a:hover {
+	color: #33388c;
+}
+
+.dashboard {
+	display: flex;
+	justify-content: space-between;
+}
+
+.dashboard-left {
+	width: 65%;
+}
+
+.dashboard-right {
+	width: 32%;
+}
+
+.dashboard-link {
+	color: #900;
+	font-size: 2.5rem;
+	text-decoration: none;
+	display: block;
+	margin-top: 1.5em;
+}
+
+.dashboard-link:hover {
+	color: #33388c;
+}
+
+.dashboard-item {
+	color: #333;
+	font-size: 2.5rem;
+	text-decoration: none;
+	display: block;
+	margin: 1.5em 0 .25em 0;
+}
+
+
+.instructions {
+	font-size: 1.4rem;
+	margin: .5em 0;
+	line-height: 1.3em;
+}
+
+.del {
+	text-decoration: none;
+	color: #999;
+	display: block;
+	margin-top: 1em;
+	font-size: 1.4rem;
+}
+
+.del:hover {
+	color: #900;
+}
+
+.fineprint {
+	font-size: 1.3rem;
+	margin-top: 5px;
+}
+
+.labelset label {
+	margin-bottom: 1em;
+}
+
+label {
+	display: block;
+	margin: 1em 0 5px 0;
+	font-weight: 500;
+	font-size: 1.4rem;
+}
+
+input[type=text], input[type=password], textarea {
+	font-size: 1.6rem;
+	padding: .5em;
+	border: 1px solid #ccc;
+	width: 100%;
+}
+
+textarea {
+	height: 200px;
+}
+
+.longtext {
+	font-size: 1.3rem;
+}
+
+.submitBtn {
+	-webkit-appearance: none;
+	border: 1px solid #33388c;
+	font-size: 1.5rem;
+	text-transform: uppercase;
+	font-weight: 700;
+	margin: 1em 0 2em 0;
+	display: block;
+	color: #fff;
+	background: #33388c;
+	padding: .5em 2.5em;
+	cursor: pointer;
+}
+
+.submitInline {
+	display: inline-block;
+	margin-left: 1em;
+}
+
+.submitBtn:hover {
+	background: #4551bf;
+}
+
+.candidateList {
+	border-bottom: 2px solid #ccc;
+	padding-bottom: 1em;
+	margin-bottom: 2em;
+	line-height: 1.5em;
+}
+
+.candidate-image {
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+}
+
+
+.rowRule {
+	border-top: 2px solid #666;
+}
+
+.locals {
+	display: none;
+}
+
+
+.success {
+	background: #0a8e00;
+	color: #fff;
+	padding: 1em;
+	text-align: center;
+	font-weight: 500;
+	margin-bottom: 1em;
+}
+
+.endorser-logo {
+	background-repeat: no-repeat;
+	width: 100%;
+	height: 150px;
+	background-position: 50%;
+	background-size: 85%;
+}
+
+.endorsed {
+	border-left: 5px solid #090;
+	background: rgba(0,150,0,.08);
+}
+
+
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+
+th {
+	background: #666;
+	color: #fff;
+	font-size: 1.6rem;
+	padding: .5em 1em;
+	font-weight: 500;
+	text-align: left;
+	border-left: 1px solid #222;
+	border-right: 1px solid #222;
+}
+
+td {
+	border: 1px solid #ccc;
+	padding: .5em 1em;
+	font-size: 1.4rem;
+	line-height: 1.3em;
+}
+
+td a {
+	color: #900;
+	text-decoration: none;
+	font-size: 1.3rem;
+}
+
+td a:hover {
+	text-decoration: underline;
+}	
+
+h1 {
+	font-size: 4rem;
+	margin-bottom: .5em;
+	font-family: "Oswald",sans-serif;
+	font-weight: 300;
+	background-repeat: no-repeat;
+	background-position: 100% 0;
+	background-size: auto 50px;
+	height: 50px;
+}
+
+h2 {
+	font-size: 2.5rem;
+	margin: .75em 0;
+	font-family: "Oswald",sans-serif;
+	font-weight: 300;
+	border-bottom: 1px solid #666;
+	padding-bottom: .5em;
+}
+
+h3 {
+	font-size: 2rem;
+	margin: 1em 0;
+	font-weight: 500;
+}
+
+h4 {
+	font-size: 2rem;
+	margin: 1em 0;
+	font-weight: 500;
+	padding-top: 1em;
+	border-top: 1px solid #666;
+	cursor:pointer;
+}
+
+h4:before {
+	content: '+ ';
+}
+
+h4:hover {
+	color: #33388c;
+}
+
+.h4-on { 
+	color: #33388c;
+}
+
+.h4-on:before {
+	content: "– ";
+}
+
+p {
+	font-size: 1.7rem;
+	line-height: normal;
+}
+
+p a {
+	color: #900;
+	text-decoration: none;
+}
+
+p a:hover { text-decoration: underline; }
+
+@media screen and (max-width: 1300px) {
+
+}
+
+select[multiple] {
+	-webkit-appearance: none;
+	width: 100%;
+	font-size: 1.5rem;
+	padding: .25em;
+	border: 1px solid #ccc;
+}
+
+select.pretty-dropdown { 
+ 	background-color: #ffffff;
+	color: #40494e;
+	margin: 0;
+	border: none;
+	outline: none;
+	border-radius: 4px;
+ 	border: 1px solid #b2b7bd;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: 400;
+	padding: 6px 12px;
+	background-image: url("../img/dd-down.svg");
+	background-position:  right center;
+	background-repeat: no-repeat;
+	background-size: 36px;
+	overflow: hidden;
+	text-indent: 0.01px;
+	-moz-appearance: none  !important; 
+	appearance: none  !important;
+	-ms-appearance: none  !important; 
+	-o-appearance: none !important;
+	-webkit-appearance: none;
+	outline: none;
+	box-shadow: none;
+	margin-bottom: 10px; 
+	min-width: 250px; 
+    /* TODO fix this
+    @media screen and (max-width: $break-sm) {
+		width: 100%;
+		max-width: 400px; 
+        } */
+	
+}
+
+select.pretty-dropdown:hover {
+ 	background-color: #ffffff;
+	color: #40494e;
+ 	transition: background-color  .2s;
+ 	box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+select.pretty-dropdown::-ms-expand { 
+	display: none;
+}
