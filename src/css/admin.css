@@ -15,12 +15,15 @@ html {
 	-webkit-text-size-adjust: 100%;
 	font-size: 62.5%;
 	-webkit-font-smoothing: antialiased;
+	position: relative;
+	margin: auto;
 }
 
 body {
 	font-family: "Roboto", sans-serif;	/*SemiBold=500, Bold=700, */
 	font-size: 1.6rem;
 	border-top: 8px solid #33388c;
+	vertical-align: middle;
 }
 
 section {
@@ -34,10 +37,20 @@ section {
 	margin: 0 auto;
 }
 
+.admin-dash {
+	max-width: 1100px;
+	margin: auto;
+	vertical-align: middle;
+}
+
+.top-line {
+	border-bottom: 8px solid #141857;
+}
+
 .logoTop {
 	height: 80px;
 	background: url(/img/torch.gif) 100% 0 no-repeat;
-	margin: 10px 0 30px 0;
+	margin: 10px 3em 30px 3em;
 	border-bottom: 2px solid #33388c;
 	display: flex;
 	align-items: flex-end;
@@ -59,11 +72,18 @@ section {
 }
 
 .dashboard-left {
+	font-family: "Roboto", sans-serif;
+	margin-left: 3em;
+	/* border: black 2px solid; */
 	width: 65%;
 }
 
 .dashboard-right {
-	width: 32%;
+	font-family: "Roboto", sans-serif;
+	margin-right: 3em;
+	/* border: black 2px solid; */
+	width: 70%;
+	float: right;
 }
 
 .dashboard-link {
@@ -88,9 +108,14 @@ section {
 
 
 .instructions {
-	font-size: 1.4rem;
+	font-family: arial;
+	font-size: 1.6rem;
 	margin: .5em 0;
 	line-height: 1.3em;
+}
+
+.email-addresses {
+	color: #900;
 }
 
 .del {
@@ -302,6 +327,10 @@ p a {
 }
 
 p a:hover { text-decoration: underline; }
+
+footer {
+	display: none;
+}
 
 @media screen and (max-width: 1300px) {
 
