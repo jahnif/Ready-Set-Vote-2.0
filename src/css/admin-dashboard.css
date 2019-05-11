@@ -1,0 +1,14 @@
+.main-link-block {
+  margin: 3em;
+}
+.dashboard-main-links {
+  display: block;
+  margin: 3px;
+  text-decoration: none;
+  color: #2cc469;
+  font-size: 2em;
+  font-weight: 700;
+}
+.dashboard-main-links :hover {
+  text-decoration: underline;
+}
