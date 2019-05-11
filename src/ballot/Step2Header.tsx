@@ -5,15 +5,9 @@ class Step2Header extends React.Component {
     return (
       <div className="main">
         <div className="step">
-          <span>Step 2:</span> Pick the candidates and measures you support! The
-          Municipal League ratings and recommendations are included to help
-          inform your vote.
+          <span>Step 2:</span> Pick the candidates and measures you support!
           <p>
-            Please note that we've only included school board races and special
-            purpose district races that have at least one endorsement.
-          </p>
-          <p>
-            And your ballot guide is personal and private. It does not count as
+            Your ballot guide is personal and private. It does not count as
             your final vote on election day.
           </p>
         </div>
