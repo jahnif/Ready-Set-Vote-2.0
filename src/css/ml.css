@@ -1110,6 +1110,7 @@ hr.sm {
 .shareurl {
     width: 100%;
     max-width: 500px;
+    font-family: Arial;
     font-size: 25px;
     padding: .5em 1em;
     text-align: center;

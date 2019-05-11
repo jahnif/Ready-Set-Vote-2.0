@@ -13,11 +13,7 @@ class Guide extends React.Component<RouteComponentProps> {
             Now that you've chosen how you'll vote, you can print, save or share
             this page.
             <div className="shareurl-label">Your unique ballot guide URL:</div>
-            <input
-              type="text"
-              className="shareurl"
-              value="https://readysetvote.org/guide/CCAF3"
-            />
+            <div className="shareurl">https://readysetvote.org/guide/CCAF3</div>
             <p className="shareurl-fineprint">
               Save this private link to return to your ballot guide.
             </p>
