@@ -21,7 +21,6 @@ class EndorserList extends React.Component<IEndorserList> {
                         </a>
                     })}
                 </div>
-                <div>TODO: Municipal League</div>
             </React.Fragment>
         );
     }

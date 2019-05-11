@@ -26,10 +26,6 @@ class Measure extends React.Component<IMeasureProps> {
                         )
                     })}                
                 </div>
-                
-                {/* <div className="measure-ml">
-                    Municipal League Recommends: <span>{this.props.measure.municipalLeaugeRecommendation}</span>
-                </div> */}
             </div>
         );
     }

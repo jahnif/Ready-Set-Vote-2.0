@@ -2,7 +2,6 @@ import * as React from 'react';
 import '../css/ml.css';
 
 import EndorserList from './Endorsers/EndorserList';
-import Rating from './Rating';
 
 interface ICandidateData {
     id: string;
@@ -28,9 +27,6 @@ class Candidate extends React.Component<ICandidateProps, ICandidateState> {
         this.state = {
             showRatingDetails: false
         };
-
-        this.hideRating = this.hideRating.bind(this);
-        this.showRating = this.showRating.bind(this);
     }
 
     public render() {
@@ -45,30 +41,10 @@ class Candidate extends React.Component<ICandidateProps, ICandidateState> {
                     <EndorserList endorserList={
                         [{ url: 'http://www.google.com', text: 'Test Endorsement' }]
                     } />
-                    <div className="mlRating">
-                        Municipal League Rating:
-                        <br />
-                        <span className="rating-text">
-                            <a onClick={this.showRating}>{/*this.props.candidate.municipalLeagueRatingText*/'TODO'}</a>
-                        </span>
-                        { this.state.showRatingDetails && <Rating ratingLevel={/*this.props.candidate.municipalLeagueRating*/1} hideRatingCallback={this.hideRating} /> }
-                    </div>
                     <button className="seat-select" id="seat-selectIDTODO">Pick</button>
                 </div>
             </div>
         );
-    }
-
-    private hideRating() {
-        this.setState({
-            showRatingDetails: false
-        })
-    }
-
-    private showRating() {
-        this.setState({
-            showRatingDetails: true
-        })
     }
 }
 
