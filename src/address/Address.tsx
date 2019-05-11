@@ -17,7 +17,7 @@ class Address extends React.Component<RouteComponentProps> {
             <img src={rsvLogo} alt="ReadySetVote.org" className="welcome-logo" />
           </a>	
           <div className="addressBox" style={{display: "block"}}>
-            <p>Enter your King County street address and we'll recreate your ballot.</p>
+            <p>Enter your street address and we'll recreate your ballot.</p>
             <form>
               <input type="text" className="myAddress" id="address" placeholder="e.g., 220 2nd Ave S, Seattle WA" value={this.addressStore.address}/>
               <div className="errAddressBox">
