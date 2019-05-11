@@ -32,6 +32,10 @@ class Guide extends React.Component<RouteComponentProps> {
               <a href="#0">Print</a>
               <a href="/ballot/SEA37-1935/9/37">Start Over</a>
             </div>
+            <div className="step hidePrint" style={{ paddingBottom: "50px" }}>
+              For over 100 years, The Municipal League has been building stronger communities by linking people to the local governments that serve them. If you want to <a href="http://www.munileague.org/support-sponsorship/" target="_blank">donate</a>, <a href="http://www.munileague.org/about/contact/" target="_blank">volunteer</a>  or just learn more, please visit <a href="http://www.munileague.org" target="_blank">munileague.org</a>.
+              <p className="fineprint">Have questions about or ideas how we can improve this service? <a href="mailto:readysetvote@munileague.org?SUBJECT=Guide%20Feedback">Email us</a>!</p>
+            </div>
           </div>
         </div>
       </div>
