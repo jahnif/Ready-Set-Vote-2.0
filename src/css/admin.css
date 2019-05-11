@@ -328,10 +328,6 @@ p a {
 
 p a:hover { text-decoration: underline; }
 
-footer {
-	display: none;
-}
-
 @media screen and (max-width: 1300px) {
 
 }
