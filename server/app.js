@@ -4,6 +4,7 @@ const express = require('express')
 const cors = require('cors')
 
 const userRouter = require('./routes/user')
+const candidateRouter = require('./routes/candidate')
 
 let app = express()
 
@@ -15,9 +16,9 @@ app.use(cors())
 
 // Register Routes
 app.use(userRouter)
+app.use(candidateRouter)
 
 if (process.env.NODE_ENV === 'production') {    
-    console.log('')
     app.use(express.static(path.join(__dirname, '..', '/client/build')))
     
     app.get('*', (req, res) => {

@@ -1,0 +1,65 @@
+Candidate: {
+    name: string,
+    url: url,
+    email: email,
+    phone: phone,
+    party: { ref: 'Party' },
+    seat: { ref: 'Seat' }
+}
+
+Seat: {
+    title: string,
+    district: { ref: 'District' }
+}
+
+District: {
+    name: String,
+    districtNumber: Int,
+    distrcitType: [ Fed, State, Police, etc. ]
+}
+
+// I still don't like how location/Districts are set up.
+// May only need candidate in Votes, not seat + candidate.
+Ballot: {
+    location: {
+        precinct: { ref: 'District' },
+        city: { ref: 'District' },
+        congressional: { ref: 'District' },
+        legislativeDistrict: { ref: 'District' }
+    },
+    finalized: Bool (default: false),
+    votes: {
+        seats: [{ seat: { ref: 'Seat', unique: true }, candidate: { ref: 'Candidate' } }],
+        measures: [{ ref: 'Measure', unique: true }]
+    }
+}
+
+Endorsement: {
+    endorser: {ref: 'Endorser'},
+    candidate: {ref: 'Candidate'},
+    measure: { ref: 'Measure', endorse: Bool }
+}
+
+Measure: {
+    title: String,
+    description: String,
+    options: [String - (find out how to limit to two)]
+}
+
+Endorser: {
+    name: String,
+    url: url,
+    sortOrder: Int,
+    imageUrl: url
+}
+
+User: {
+    name: String,
+    password: String (hashed),
+    email: email,
+    admin: Bool
+}
+
+Party: {
+    name: String
+}
