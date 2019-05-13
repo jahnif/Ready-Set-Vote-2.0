@@ -1,5 +1,6 @@
 import * as React from "react";
 
+import Footer from '../Footer';
 import Header from "../Header";
 import appleby from "../img/candidates/appleby.jpg";
 import { ballotStore } from "./BallotStore";
@@ -91,6 +92,7 @@ class Ballot extends React.Component {
             }
           ]}
         />
+        <Footer />
       </div>
     );
   }

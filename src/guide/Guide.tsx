@@ -1,5 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import Footer from '../Footer';
 import Header from "../Header";
 
 class Guide extends React.Component<RouteComponentProps> {
@@ -34,6 +35,7 @@ class Guide extends React.Component<RouteComponentProps> {
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }

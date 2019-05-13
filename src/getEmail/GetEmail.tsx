@@ -1,5 +1,6 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import Footer from '../Footer';
 
 class GetEmail extends React.Component<RouteComponentProps> {
   public render() {
@@ -46,6 +47,7 @@ class GetEmail extends React.Component<RouteComponentProps> {
             <a href="/guide/CCAF3">take me straight to my ballot guide</a>
           </span>
         </div>
+        <Footer />
       </div>
     );
   }

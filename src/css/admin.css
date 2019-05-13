@@ -22,8 +22,6 @@ html {
 body {
 	font-family: "Roboto", sans-serif;	/*SemiBold=500, Bold=700, */
 	font-size: 1.6rem;
-	border-top: 8px solid #33388c;
-	vertical-align: middle;
 }
 
 section {

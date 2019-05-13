@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 
+import Footer from '../Footer';
 import rsvLogo from "../img/rsvLogo-new.svg";
 import warningImg from '../img/warning.svg';
 import { addressStore } from "./AddressStore";
@@ -34,6 +35,7 @@ class Address extends React.Component<RouteComponentProps> {
             </p>
           </div>
         </div>
+        <Footer />
       </div>
     );
   }
