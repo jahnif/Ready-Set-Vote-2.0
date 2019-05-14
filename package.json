@@ -12,6 +12,9 @@
     "heroku-postbuild": "npm install --prefix client && npm run build --prefix client",
     "test": "env-cmd server/config/test.env jest --watch --detectOpenHandles --runInBand"
   },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/jahnif/Ready-Set-Vote-2.0.git"

@@ -9,9 +9,13 @@ const CandidateSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    address: {
+        type: String,
+        trim: true,
+        default: null
+    },
     url: {
         type: String,
-        required: false,
         trim: true,
         default: null,
         validate: {
@@ -21,7 +25,6 @@ const CandidateSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: false,
         trim: true,
         unique: true,
         default: null,
@@ -32,8 +35,8 @@ const CandidateSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        required: false,
         trim: true,
+        default: null,
         validate: {
             validator: code => code === null || validator.isMobilePhone(code.toString(), 'en-US'),
             message: val => `${val.value} is not a valid phone number`

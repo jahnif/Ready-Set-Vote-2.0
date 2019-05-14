@@ -1,6 +1,7 @@
 const express = require('express');
 
 const User = require('../models/user');
+const adminRequired = require('../middleware/adminRequired');
 const authenticate = require('../middleware/authenticate');
 const validateID = require('../middleware/validateID');
 
@@ -11,7 +12,9 @@ router.post('/users', async (req, res) => {
     const allowedFields = ['name', 'email', 'password'];
     const validFields = fields.every((field) => allowedFields.includes(field));
     if (!validFields){
-        return res.status(400).send({errors: {'fieldError': 'Invalid Fields Submitted'}});
+        return res.status(400).send({
+            error: 'Invalid Fields Submitted.'
+        });
     }
     
     const user = await new User(req.body);
@@ -25,16 +28,12 @@ router.post('/users', async (req, res) => {
     }
 });
 
-router.get('/users', authenticate, async (req, res) => {
+router.get('/users', authenticate, adminRequired, async (req, res) => {
     try {
-        if (req.user.admin === true) {
-            const userCount = await User.countDocuments();
-            const users = await User.find();
-            // Send the users back as an object, since that allows us to expand it in the future with additional properties.
-            res.send({userCount, users});
-        } else {
-            req.sendStatus(401);
-        }
+        const userCount = await User.countDocuments();
+        const users = await User.find();
+        // Send the users back as an object, since that allows us to expand it in the future with additional properties.
+        res.send({userCount, users});
     } catch (e) {
         res.status(500).send(e);
     }
@@ -50,7 +49,9 @@ router.patch('/users/me', authenticate, async (req, res) => {
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
 
     if (!isValidOperation) {
-        return res.status(400).send({ errors: {'fieldError': 'Invalid Fields Submitted.'}});
+        return res.status(400).send({ 
+            error: 'Invalid Fields Submitted.'
+        });
     }
 
     try {
@@ -79,11 +80,13 @@ router.get('/users/:id', authenticate, validateID, async (req, res) => {
 router.patch('/users/:id', authenticate, validateID, async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'email', 'password'];
-    const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
+    const isValidOperation = updates.every( update => allowedUpdates.includes(update));
 
     // only allow updates if valid updates.
     if(!isValidOperation){
-        return res.status(400).send({errors: {'fieldError': 'Invalid Fields Submitted.'}});
+        return res.status(400).send({
+            error: 'Invalid Fields Submitted.'
+        });
     }
     
     try {
@@ -94,10 +97,10 @@ router.patch('/users/:id', authenticate, validateID, async (req, res) => {
             res.send({user});
         } else {
             res.sendStatus(401);
-        }
+        };
     } catch (e) {
         res.status(400).send(e);
-    }
+    };
 });
 
 router.delete('/users/:id', authenticate, validateID, async (req, res) => {
@@ -122,7 +125,9 @@ router.post('/users/login', async (req, res) => {
         const token = await user.generateAuthToken();
         res.send({token, user});
     } catch (e) {
-        res.status(400).send({error: "Unable to login with provided credentials."});
+        res.status(400).send({
+            error: 'Unable to login with provided credentials.'
+        });
     }
 });
 
