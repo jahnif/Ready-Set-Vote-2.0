@@ -5,22 +5,27 @@ const authenticate = require('../middleware/authenticate');
 const validateID = require('../middleware/validateID');
 
 const Candidate = require('../models/candidate');
+const Party = require('../models/party');
 
 const router = new express.Router();
 
 router.post('/candidates', authenticate, async (req, res) => {
-    const fields = Object.keys(req.body);
-    const allowedFields = ['name', 'url', 'email', 'phone'];
-    const validFields = fields.every((field) => allowedFields.includes(field));
+    const field = Object.keys(req.body);
+    const allowedFields = ['name', 'url', 'email', 'phone', 'party'];
+    const validFields = field.every((field) => allowedFields.includes(field));
 
     if (!validFields){
         return res.status(400).send({error: 'Invalid Fields Submitted.'});
     };
-
-    const candidate = await new Candidate(req.body);
     
     try {
-        await candidate.save();
+        const candidate = await new Candidate(req.body);
+        if (field.includes('party')){
+            const partyQuery = {'name': req.body.party};
+            let party = await Party.findOneAndUpdate(partyQuery, partyQuery, {upsert: true, new: true});
+            candidate.party = party._id;
+        }
+        await candidate.save().then( candidate => candidate.populate('party').execPopulate());
         res.status(201).send({candidate});
     } catch(e) {
         res.status(400).send(e);
@@ -29,11 +34,11 @@ router.post('/candidates', authenticate, async (req, res) => {
 
 router.get('/candidates/:id', validateID, async (req, res) => {
     try {
-        const candidate = await Candidate.findById(req.id);
+        const candidate = await Candidate.findById(req.id);    
         if (candidate) {
-            res.send({candidate});
+            return res.send({candidate});
         } else {
-            res.sendStatus(404);
+            return res.sendStatus(404);
         };
     } catch(e) {
         res.status(500).send(e);
@@ -42,9 +47,9 @@ router.get('/candidates/:id', validateID, async (req, res) => {
 
 router.patch('/candidates/:id', authenticate, validateID, async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['name', 'address', 'url', 'email', 'phone'];
+    const allowedUpdates = ['name', 'address', 'url', 'email', 'phone', 'party'];
     const isValidOperation = updates.every( update => allowedUpdates.includes(update));
-
+    
     if(!isValidOperation){
         return res.status(400).send({
             error: 'Invalid Fields Submitted.'
@@ -53,8 +58,17 @@ router.patch('/candidates/:id', authenticate, validateID, async (req, res) => {
 
     try {
         const candidate = await Candidate.findById(req.id);
-        updates.forEach( update => candidate[update] = req.body[update]);
-        await candidate.save();
+        updates.forEach( update => update !== 'party' ? candidate[update] = req.body[update] : null);
+        if (updates.includes('party')){
+            let newParty = await Party.findOneAndUpdate({name: req.body.party}, {name: req.body.party}, {upsert: true, new: true});
+            candidate.party = newParty._id;
+            await candidate.save().then(candidate => candidate.populate('party').execPopulate());
+        } else {
+            await candidate.save();
+        };
+        // candidate.populate('party', function(err){
+        //     console.log(candidate.party);
+        // });
         res.send({candidate});
     } catch (e) {
         res.status(400).send(e);

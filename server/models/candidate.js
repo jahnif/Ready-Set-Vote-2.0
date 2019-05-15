@@ -41,8 +41,23 @@ const CandidateSchema = new mongoose.Schema({
             validator: code => code === null || validator.isMobilePhone(code.toString(), 'en-US'),
             message: val => `${val.value} is not a valid phone number`
         }
+    },
+    party: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'Party'
     }
 });
+
+const autoPopulateParty = function(next) {
+    this.populate('party');
+    next()
+}
+
+CandidateSchema
+    .pre('find', autoPopulateParty)
+    .pre('findById', autoPopulateParty)
+    .pre('findOne', autoPopulateParty);
 
 let Candidate = new mongoose.model('Candidate', CandidateSchema);
 
