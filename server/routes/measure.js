@@ -3,6 +3,7 @@ const express = require('express');
 const adminRequired = require('../middleware/adminRequired');
 const authenticate = require('../middleware/authenticate');
 const validateID = require('../middleware/validateID');
+const paginateOpts = require('../middleware/paginateOpts');
 
 const Measure = require('../models/measure');
 
@@ -26,14 +27,15 @@ router.post('/measures', authenticate, async (req, res) => {
     };
 });
 
-router.get('/measures', async (req, res) => {
-    // TODO:
-        // Paginate
-        // District filtering params
+router.get('/measures', paginateOpts, async (req, res) => {
     try {
-        const measuresCount = await Measure.countDocuments();
-        const measures = await Measure.find();
-        return res.send({ measuresCount, measures });
+        const measures = await Measure.paginate({}, req.paginateOpts);
+        return res.send({ 
+            measures: measures.docs,
+            measuresCount: measures.total,
+            limit: measures.limit,
+            offset: measures.offset
+        });
     } catch(e) {
         res.status(500).send(e);
     }

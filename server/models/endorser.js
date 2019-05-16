@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const mongoosePaginate = require('mongoose-paginate');
 
 const EndorserSchema = new mongoose.Schema({
     name: {
@@ -38,6 +39,8 @@ const EndorserSchema = new mongoose.Schema({
 //     localField: '_id',
 //     foreignField: 'endorser'
 // });
+
+EndorserSchema.plugin(mongoosePaginate);
 
 let Endorser = new mongoose.model('Endorser', EndorserSchema);
 

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const mongoosePaginate = require('mongoose-paginate');
 
 const twoChoices = val => {
     return val.length === 2;
@@ -23,6 +24,8 @@ const MeasureSchema = new mongoose.Schema({
         validate: [twoChoices, 'Measures must have two and only two choices.']
     }
 });
+
+MeasureSchema.plugin(mongoosePaginate);
 
 let Measure = new mongoose.model('Measure', MeasureSchema);
 

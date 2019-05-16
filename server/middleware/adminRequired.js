@@ -8,7 +8,7 @@ const adminRequired = async (req, res, next) => {
         next();
     } catch(e) {
         throw new Error('Admin Permissions requires authentication middleware');
-    }
+    };
 };
 
-module.exports = adminRequired
+module.exports = adminRequired;

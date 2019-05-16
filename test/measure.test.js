@@ -11,15 +11,35 @@ const { tokens } = require('./fixtures/users');
 beforeEach(setupDatabase);
 
 describe('GET /measures', () => {
-    // Paginate to prevent DDOS.
-    // Add district filtering params.
-    it('should return a list of all measures when no params provided', async () => {
+    it('should return a list of paginated measures (limit: 10, offset: 0) when no params provided', async () => {
 
         const res = await request(app)
             .get('/measures')
             .expect(200);
         expect(res.body.measures.length).toBe(2);
         expect(res.body.measuresCount).toBe(2);
+        expect(res.body.limit).toBe(10);
+        expect(res.body.offset).toBe(0);
+    });
+    
+    it('should return a list of paginated measures when params provided', async () => {
+
+        const res = await request(app)
+            .get('/measures?limit=1&offset=1')
+            .expect(200);
+        expect(res.body.measures.length).toBe(1);
+        expect(res.body.measuresCount).toBe(2);
+        expect(res.body.measures[0].name).toBe(measures[1].name);
+    });
+
+    it('should return a list of sorted measures when params provided', async () => {
+
+        const res = await request(app)
+            .get('/measures?sortBy=title:desc')
+            .expect(200);
+        expect(res.body.measures.length).toBe(2);
+        expect(res.body.measuresCount).toBe(2);
+        expect(res.body.measures[0].name).toBe(measures[1].name);
     });
 });
 

@@ -3,6 +3,7 @@ const express = require('express');
 const adminRequired = require('../middleware/adminRequired');
 const authenticate = require('../middleware/authenticate');
 const validateID = require('../middleware/validateID');
+const paginateOpts = require('../middleware/paginateOpts');
 
 const Endorser = require('../models/endorser');
 
@@ -26,11 +27,15 @@ router.post('/endorsers', authenticate, async (req, res) => {
     };
 });
 
-router.get('/endorsers', async (req, res) => {
+router.get('/endorsers', paginateOpts, async (req, res) => {
     try {
-        const endorsersCount = await Endorser.countDocuments();
-        const endorsers = await Endorser.find();
-        return res.send({ endorsersCount, endorsers });
+        const endorsers = await Endorser.paginate({}, req.paginateOpts);
+        return res.send({
+            endorsers: endorsers.docs, 
+            endorserCount: endorsers.total, 
+            limit: endorsers.limit, 
+            offset: endorsers.offset
+        });
     } catch(e) {
         res.status(500).send(e);
     }

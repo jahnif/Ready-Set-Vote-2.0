@@ -4,6 +4,7 @@ const User = require('../models/user');
 const adminRequired = require('../middleware/adminRequired');
 const authenticate = require('../middleware/authenticate');
 const validateID = require('../middleware/validateID');
+const paginateOpts = require('../middleware/paginateOpts');
 
 const router = new express.Router();
 
@@ -28,12 +29,16 @@ router.post('/users', async (req, res) => {
     }
 });
 
-router.get('/users', authenticate, adminRequired, async (req, res) => {
+router.get('/users', authenticate, adminRequired, paginateOpts, async (req, res) => {
     try {
-        const userCount = await User.countDocuments();
-        const users = await User.find();
+        const users = await User.paginate({}, req.paginateOpts);
         // Send the users back as an object, since that allows us to expand it in the future with additional properties.
-        res.send({userCount, users});
+        res.send({
+            users: users.docs, 
+            userCount: users.total, 
+            offset: users.offset, 
+            limit: users.limit
+        });
     } catch (e) {
         res.status(500).send(e);
     }

@@ -10,7 +10,7 @@ const { users, tokens } = require('./fixtures/users')
 beforeEach(setupDatabase);
 
 describe('GET /users', () => {
-    it('should return user list if admin', async () => {
+    it('should return paginated user list (offset: 0, limit: 10) if admin', async () => {
         const token = tokens[2];
 
         const res = await request(app)
@@ -19,6 +19,22 @@ describe('GET /users', () => {
             .expect(200);
         expect(res.body.userCount).toBe(3);
         expect(res.body.users.length).toBe(3);
+        expect(res.body.limit).toBe(10);
+        expect(res.body.offset).toBe(0);
+    });
+
+    it('should return paginated user list by params if admin', async () => {
+        const token = tokens[2];
+
+        const res = await request(app)
+            .get('/users?offset=2&limit=1')
+            .set('Authorization', `Bearer ${token}`)
+            .expect(200);
+        expect(res.body.userCount).toBe(3);
+        expect(res.body.users.length).toBe(1);
+        expect(res.body.users[0].name).toBe(users[2].name);
+        expect(res.body.limit).toBe(1);
+        expect(res.body.offset).toBe(2);
     });
 
     it('should return 401 if not admin', async () => {

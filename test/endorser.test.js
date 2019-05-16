@@ -11,15 +11,31 @@ const { tokens } = require('./fixtures/users');
 beforeEach(setupDatabase);
 
 describe('GET /endorsers', () => {
-    // Rework when districts added to prevent DDOS.
-    it('should return a list of all endorsers when no params provided', async () => {
-
+    it('should return a  paginated list of endorsers (limit 10, offset 0) when no params provided', async () => {
         const res = await request(app)
             .get('/endorsers')
             .expect(200);
         expect(res.body.endorsers.length).toBe(2);
-        expect(res.body.endorsersCount).toBe(2);
+        expect(res.body.endorserCount).toBe(2);
     });
+    
+    it('should return a  paginated list of endorsers when params provided', async () => {
+        const res = await request(app)
+            .get('/endorsers?limit=1&offset=1')
+            .expect(200);
+        expect(res.body.endorsers.length).toBe(1);
+        expect(res.body.endorsers[0].name).toBe(endorsers[1].name);
+        expect(res.body.endorserCount).toBe(2);
+    });
+
+    it('should return a list of sorted endorsers when params provided', async () => {
+        const res = await request(app)
+            .get('/endorsers/?sortBy=name:asc')
+            .expect(200);
+        expect(res.body.endorsers.length).toBe(2);
+        expect(res.body.endorsers[0].name).toBe(endorsers[1].name);
+        expect(res.body.endorsers[1].name).toBe(endorsers[0].name);
+    }); 
 });
 
 describe('GET /endorsers/:id', () => {

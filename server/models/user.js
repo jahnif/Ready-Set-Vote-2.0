@@ -1,7 +1,8 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate');
+const validator = require('validator');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -71,6 +72,8 @@ UserSchema.pre('save', async function (next) {
     } 
     next()
 });
+
+UserSchema.plugin(mongoosePaginate)
 
 let User = mongoose.model('User', UserSchema);
 

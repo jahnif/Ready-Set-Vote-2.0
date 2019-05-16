@@ -55,6 +55,7 @@ District: {
     timestamps: true
 }
 
+// Completed DB, API Routes, and Testing.
 Measure: {
     title: String,
     description: String,
