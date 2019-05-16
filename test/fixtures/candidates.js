@@ -18,9 +18,9 @@ const candidates = [{
     name: 'Susan Hutchinson',
     campaignAddress: '222 Second Ave',
     url: 'www.hutchinson4executive.com',
-    email: 'susan@hutchinson.com',
+    email: 'susan.hutchinson@example.com',
     phone: '206-999-6666',
     party: parties[1]._id
-}]
+}];
 
-module.exports = candidates
+module.exports = candidates;

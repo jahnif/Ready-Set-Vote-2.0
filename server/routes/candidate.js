@@ -10,9 +10,9 @@ const Party = require('../models/party');
 const router = new express.Router();
 
 router.post('/candidates', authenticate, async (req, res) => {
-    const field = Object.keys(req.body);
+    const fields = Object.keys(req.body);
     const allowedFields = ['name', 'url', 'email', 'phone', 'party'];
-    const validFields = field.every((field) => allowedFields.includes(field));
+    const validFields = fields.every((field) => allowedFields.includes(field));
 
     if (!validFields){
         return res.status(400).send({error: 'Invalid Fields Submitted.'});
@@ -20,7 +20,7 @@ router.post('/candidates', authenticate, async (req, res) => {
     
     try {
         const candidate = await new Candidate(req.body);
-        if (field.includes('party')){
+        if (fields.includes('party')){
             const partyQuery = {'name': req.body.party};
             let party = await Party.findOneAndUpdate(partyQuery, partyQuery, {upsert: true, new: true});
             candidate.party = party._id;
@@ -66,9 +66,6 @@ router.patch('/candidates/:id', authenticate, validateID, async (req, res) => {
         } else {
             await candidate.save();
         };
-        // candidate.populate('party', function(err){
-        //     console.log(candidate.party);
-        // });
         res.send({candidate});
     } catch (e) {
         res.status(400).send(e);
@@ -82,7 +79,7 @@ router.delete('/candidates/:id', authenticate, adminRequired, validateID, async 
             return res.sendStatus(404);
         };
 
-        return res.send(candidate);
+        return res.send({ candidate });
     } catch(e) {
         res.status(500).send(e);
     }

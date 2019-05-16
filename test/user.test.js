@@ -247,8 +247,8 @@ describe('DELETE /users/:id', () => {
             .delete(`/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
-        expect(res.body._id).toBe(user._id.toString());
-        expect(res.body.name).toBe(user.name);
+        expect(res.body.user._id).toBe(user._id.toString());
+        expect(res.body.user.name).toBe(user.name);
 
         const userDB = await User.find();
         expect(userDB.length).toBe(2);
@@ -277,8 +277,8 @@ describe('DELETE /users/:id', () => {
             .delete(`/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
-        expect(res.body._id).toBe(user._id.toString());
-        expect(res.body.name).toBe(user.name);
+        expect(res.body.user._id).toBe(user._id.toString());
+        expect(res.body.user.name).toBe(user.name);
 
         const userDB = await User.find();
         expect(userDB.length).toBe(2);

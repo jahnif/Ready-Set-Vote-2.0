@@ -1,32 +1,28 @@
+// Almost completed. Only need to implement DB, API Routes, and Tests for office field.
 Candidate: {
     name: string,
     url: url,
+    address: string,
     email: email,
     phone: phone,
     party: { ref: 'Party' },
-    seat: { ref: 'Seat' }
+    contest: { ref: 'Office' }
 }
 
-Seat: {
+Office: {
     title: string,
     district: { ref: 'District' }
 }
 
-District: {
-    name: String,
-    districtNumber: Int,
-    distrcitType: [ Fed, State, Police, etc. ]
-}
-
-// I still don't like how location/Districts are set up.
+// I still don't like how location/Districts are set up. But their overlapping nature makes for messy work; reality isn't a database.
 // May only need candidate in Votes, not seat + candidate.
 Ballot: {
-    location: {
-        precinct: { ref: 'District' },
-        city: { ref: 'District' },
-        congressional: { ref: 'District' },
-        legislativeDistrict: { ref: 'District' }
-    },
+    districts: [
+        {ref: 'District'}
+    ],
+    endorsersSelected: [
+        {ref: 'Endorser'}
+    ]
     finalized: Bool (default: false),
     votes: {
         seats: [{ seat: { ref: 'Seat', unique: true }, candidate: { ref: 'Candidate' } }],
@@ -34,18 +30,49 @@ Ballot: {
     }
 }
 
-Endorsement: {
-    endorser: {ref: 'Endorser'},
-    candidate: {ref: 'Candidate'},
-    measure: { ref: 'Measure', endorse: Bool }
+// Can ocdID act in place of country, state, and city entries? -- Yes, appears so.
+// Use Google Civic Api representativeInfoByAddress with fields=division to get a user's divs.
+// Do we need scope? I don't think so.
+District: {
+    ocdID: String,
+    name: String,
+    scope: enum [ 
+        "cityCouncil",
+        "citywide",
+        "congressional",
+        "countyCouncil",
+        "countywide",
+        "judicial",
+        "national",
+        "schoolBoard",
+        "special",
+        "stateLower",
+        "stateUpper",
+        "statewide",
+        "township",
+        "ward"
+    ],
+    timestamps: true
 }
 
 Measure: {
     title: String,
     description: String,
-    options: [String - (find out how to limit to two)]
+    options: {
+        type: [String],
+        validator: [twoChoices, 'Measures must have two choices']
+    },
+    district: { ref: 'District' }
 }
 
+// Validator to limit Measure.options to two choices.
+function twoChoices (val) {
+    return val.length !== 2;
+}
+
+// Completed DB, API Routes, and Testing.
+// Problem with locating endorsers - how are they tied to districts?
+// sortOrder will grow in complexity and be very difficult to maintain, especially across districts. Need a better solution for frontEnd sorting, maybe just use alphabetical or manual?
 Endorser: {
     name: String,
     url: url,
@@ -53,13 +80,23 @@ Endorser: {
     imageUrl: url
 }
 
+// Add URL to specific endorsement?
+Endorsement: {
+    url: url,
+    endorser: {ref: 'Endorser'},
+    candidate: {ref: 'Candidate'},
+    measure: { ref: 'Measure', endorse: Bool }
+}
+
+// Completed DB, API Routes, and Testing.
 User: {
     name: String,
-    password: String (hashed),
+    password: String (hashed via bcrypt),
     email: email,
     admin: Bool
 }
 
+// Completed DB, API Routes, and Testing.
 Party: {
     name: String
 }

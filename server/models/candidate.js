@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-const Party = require('./party');
+// TODO: Add seat;
 
 const CandidateSchema = new mongoose.Schema({
     name: {
@@ -17,19 +17,19 @@ const CandidateSchema = new mongoose.Schema({
     url: {
         type: String,
         trim: true,
+        required: false,
         default: null,
         validate: {
-            validator: code => code === null || validator.isURL(code.toString()),
+            validator: url => url === null || validator.isURL(url.toString()),
             message: val => `Must be a valid URL`
         }
     },
     email: {
         type: String,
         trim: true,
-        unique: true,
         default: null,
         validate: {
-            validator: code => code === null || validator.isEmail(code.toString()),
+            validator: email => email === null || validator.isEmail(email.toString()),
             message: val => `${val.value} is not a valid email`
         }
     },
@@ -38,7 +38,7 @@ const CandidateSchema = new mongoose.Schema({
         trim: true,
         default: null,
         validate: {
-            validator: code => code === null || validator.isMobilePhone(code.toString(), 'en-US'),
+            validator: phone => phone === null || validator.isMobilePhone(phone.toString(), 'en-US'),
             message: val => `${val.value} is not a valid phone number`
         }
     },

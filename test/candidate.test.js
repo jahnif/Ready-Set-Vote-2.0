@@ -1,8 +1,8 @@
-const expect = require('expect');
-const request = require('supertest');
-const { ObjectID } = require('mongodb');
-
 const app = require('../server/app');
+const expect = require('expect');
+const { ObjectID } = require('mongodb');
+const request = require('supertest');
+
 const Candidate = require('../server/models/candidate');
 const candidates = require('./fixtures/candidates');
 const parties = require('./fixtures/parties');
@@ -11,7 +11,7 @@ const { tokens } = require('./fixtures/users');
 
 beforeEach(setupDatabase);
 
-describe('GET /candidates:id', () => {
+describe('GET /candidates/:id', () => {
     it('should return candidate by id', async () => {
         const candidate = candidates[0];
 
@@ -38,7 +38,6 @@ describe('GET /candidates:id', () => {
             .get(`/candidates/${candidate}`)
             .expect(404);
     });
-
 });
 
 describe('POST /candidates', () => {
@@ -68,7 +67,7 @@ describe('POST /candidates', () => {
         const candidateParty = {
             name: 'Louise Belcher',
             party: 'Star-Bellied Sneetches'
-        }
+        };
         
         const res = await request(app)
             .post('/candidates')
@@ -82,10 +81,52 @@ describe('POST /candidates', () => {
         expect(newCandidate).toBeTruthy();
         expect(newCandidate.name).toBe(candidateParty.name);
         expect(newCandidate.party.name).toBe(res.body.candidate.party.name);
-    })
+    });
+
+    it('should return 400 error with incorrect email address', async () => {
+        const candidateParty = {
+            name: 'Louise Belcher',
+            party: 'Star-Bellied Sneetches',
+            email: 'wrong.address'
+        };
+        
+        await request(app)
+            .post('/candidates')
+            .set('Authorization', `Bearer ${token}`)
+            .send(candidateParty)
+            .expect(400);
+    });
+
+    it('should return 400 error with incorrect url', async () => {
+        const candidateParty = {
+            name: 'Louise Belcher',
+            party: 'Star-Bellied Sneetches',
+            url: 'incorrectURL'
+        };
+        
+        await request(app)
+            .post('/candidates')
+            .set('Authorization', `Bearer ${token}`)
+            .send(candidateParty)
+            .expect(400);
+    });
+
+    it('should return 400 error with incorrect phone number', async () => {
+        const candidateParty = {
+            name: 'Louise Belcher',
+            party: 'Star-Bellied Sneetches',
+            phone: '123123-32120211'
+        };
+        
+        await request(app)
+            .post('/candidates')
+            .set('Authorization', `Bearer ${token}`)
+            .send(candidateParty)
+            .expect(400);
+    });
 
     it('should not create candidate if user unauthorized', async () => {        
-        const res = await request(app)
+        await request(app)
             .post('/candidates')
             .send(candidate)
             .expect(401);
@@ -223,4 +264,4 @@ describe('DELETE /candidates/:id', () => {
         const candidateDB = await Candidate.find();
         expect(candidateDB.length).toBe(2);
     });
-})
+});

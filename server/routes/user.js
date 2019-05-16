@@ -110,7 +110,7 @@ router.delete('/users/:id', authenticate, validateID, async (req, res) => {
             if(!user) {
                 return res.sendStatus(404);
             }
-            return res.send(user);
+            return res.send({ user });
         } else {
             return res.sendStatus(401);
         }
