@@ -3,7 +3,7 @@ import '../css/ml.css';
 
 import EndorserList from './Endorsers/EndorserList';
 
-interface ICandidateData {
+interface ICandidate {
     id: string;
     image: string;
     name: string;
@@ -12,40 +12,33 @@ interface ICandidateData {
     urlText: string;
 }
 
-interface ICandidateProps {
-    candidate: ICandidateData
+interface ICandidateProps extends ICandidate {
+    selected: boolean,
+    handleSelectCandidate: (id: string) => void,
 }
 
-interface ICandidateState {
-    showRatingDetails: boolean
-}
-
-class Candidate extends React.Component<ICandidateProps, ICandidateState> {
-    constructor(props: ICandidateProps) {
-        super(props);
-
-        this.state = {
-            showRatingDetails: false
-        };
-    }
-
+class Candidate extends React.Component<ICandidateProps> {
     public render() {
         return (
-            <div className="seat" id={this.props.candidate.id}>
-                <img src={this.props.candidate.image} className="candidate-pic" />
-                <div className="seat-party">{this.props.candidate.party}</div>
-                <div className="seat-name">{this.props.candidate.name}</div>
-                <a href={this.props.candidate.url} target="_blank" className="seat-url">{this.props.candidate.urlText}</a>
+            <div className={ this.props.selected ? "seat seat-selected" : "seat" } id={this.props.id}>
+                <img src={this.props.image} className="candidate-pic" />
+                <div className="seat-party">{this.props.party}</div>
+                <div className="seat-name">{this.props.name}</div>
+                <a href={this.props.url} target="_blank" className="seat-url">{this.props.urlText}</a>
                 <div className="seat-divider" />
                 <div className="seat-endorsedBy">
                     <EndorserList endorserList={
                         [{ url: 'http://www.google.com', text: 'Test Endorsement' }]
                     } />
-                    <button className="seat-select" id="seat-selectIDTODO">Pick</button>
+                    <button className="seat-select" id="seat-selectIDTODO" onClick={this.onSelectCandidate}>Pick</button>
                 </div>
             </div>
         );
     }
+
+    private onSelectCandidate = () => {
+        this.props.handleSelectCandidate(this.props.id);
+    }
 }
 
-export default Candidate;
+export { Candidate, ICandidate };

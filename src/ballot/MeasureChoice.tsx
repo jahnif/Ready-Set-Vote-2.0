@@ -31,4 +31,4 @@ class MeasureChoice extends React.Component<IMeasureChoiceProps> {
     }
 }
 
-export { IMeasureChoice, IMeasureChoices, MeasureChoice, IMeasureChoiceProps };
+export { MeasureChoice, IMeasureChoices };
