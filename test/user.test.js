@@ -162,7 +162,7 @@ describe('GET /users/:id', () => {
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
     });
-});;
+});
 
 describe('PATCH /users/me', () => {
     it('should update user\'s own data with valid input', async () => {
@@ -201,8 +201,42 @@ describe('PATCH /users/:id', () => {
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
-        expect(res.body.user.name).toBe('Janet');
+        expect(res.body.user.name).toBe(body.name);
+
+        const updatedUser = await User.findById(user._id);
+        expect(updatedUser.name).toBe(body.name);
     });
+
+    it('should not verify user if not Admin', async () => {
+        const user = users[1];
+        const token = tokens[1];
+        const body = {verified: 'true'}
+
+        const res = await request(app)
+            .patch(`/users/${user._id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send(body)
+            .expect(200);
+
+        const updatedUser = await User.findById(user._id);
+        expect(updatedUser.verified).toBe(false);
+    })
+
+    it('should verify user if Admin', async () => {
+        const user = users[1];
+        const token = tokens[2];
+        const body = {verified: 'true'}
+
+        const res = await request(app)
+            .patch(`/users/${user._id}`)
+            .set('Authorization', `Bearer ${token}`)
+            .send(body)
+            .expect(200);
+        expect(res.body.user.verified).toBe(true);
+
+        const updatedUser = await User.findById(user._id);
+        expect(updatedUser.verified).toBe(true);
+    })
 
     it('should update another user\'s data by Admin with valid input', async () => {
         const user = users[0];
@@ -214,7 +248,10 @@ describe('PATCH /users/:id', () => {
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
-        expect(res.body.user.name).toBe('Janet');  
+        expect(res.body.user.name).toBe(body.name); 
+        
+        const updatedUser = await User.findById(user._id);
+        expect(updatedUser.name).toBe(body.name);
     });
 
     it('should not update another user\'s data', async () => {

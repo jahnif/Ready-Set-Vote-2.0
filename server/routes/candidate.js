@@ -1,15 +1,20 @@
 const express = require('express');
 
-const adminRequired = require('../middleware/adminRequired');
-const authenticate = require('../middleware/authenticate');
-const validateID = require('../middleware/validateID');
-
+// MODELS
 const Candidate = require('../models/candidate');
 const Party = require('../models/party');
 
+// Permissions Middleware
+const isAdmin = require('../middleware/auth/isAdmin');
+const isAuthenticated = require('../middleware/auth/isAuthenticated');
+const isVerified = require('../middleware/auth/isVerified');
+
+// Misc. Middleware
+const validateID = require('../middleware/validateID');
+
 const router = new express.Router();
 
-router.post('/candidates', authenticate, async (req, res) => {
+router.post('/candidates', [isAuthenticated, isVerified], async (req, res) => {
     const fields = Object.keys(req.body);
     const allowedFields = ['name', 'url', 'email', 'phone', 'party'];
     const validFields = fields.every((field) => allowedFields.includes(field));
@@ -32,7 +37,7 @@ router.post('/candidates', authenticate, async (req, res) => {
     };
 });
 
-router.get('/candidates/:id', validateID, async (req, res) => {
+router.get('/candidates/:id', [validateID], async (req, res) => {
     try {
         const candidate = await Candidate.findById(req.id);    
         if (candidate) {
@@ -45,7 +50,7 @@ router.get('/candidates/:id', validateID, async (req, res) => {
     };
 });
 
-router.patch('/candidates/:id', authenticate, validateID, async (req, res) => {
+router.patch('/candidates/:id', [isAuthenticated, isVerified, validateID], async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'address', 'url', 'email', 'phone', 'party'];
     const isValidOperation = updates.every( update => allowedUpdates.includes(update));
@@ -72,13 +77,12 @@ router.patch('/candidates/:id', authenticate, validateID, async (req, res) => {
     };
 });
 
-router.delete('/candidates/:id', authenticate, adminRequired, validateID, async (req, res) => {
+router.delete('/candidates/:id', [isAuthenticated, isAdmin, validateID], async (req, res) => {
     try {
         const candidate = await Candidate.findByIdAndDelete(req.id);
         if (!candidate) {
             return res.sendStatus(404);
         };
-
         return res.send({ candidate });
     } catch(e) {
         res.status(500).send(e);

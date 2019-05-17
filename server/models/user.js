@@ -26,6 +26,10 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: 6
     },
+    verified: {
+        type: Boolean,
+        default: false
+    },
     admin: {
         type: Boolean,
         default: false
@@ -36,7 +40,6 @@ UserSchema.methods.toJSON = function() {
     let user = this
     let userObject = user.toObject()
 
-    delete userObject.admin
     delete userObject.password
 
     return userObject

@@ -1,8 +1,14 @@
 const express = require('express');
 
+// Models
 const User = require('../models/user');
-const adminRequired = require('../middleware/adminRequired');
-const authenticate = require('../middleware/authenticate');
+
+// Permissions Middleware
+const isAdmin = require('../middleware/auth/isAdmin');
+const isAuthenticated = require('../middleware/auth/isAuthenticated');
+const isVerified = require('../middleware/auth/isVerified');
+
+// Misc. Middleware
 const validateID = require('../middleware/validateID');
 const paginateOpts = require('../middleware/paginateOpts');
 
@@ -29,7 +35,7 @@ router.post('/users', async (req, res) => {
     }
 });
 
-router.get('/users', authenticate, adminRequired, paginateOpts, async (req, res) => {
+router.get('/users', [isAuthenticated, isAdmin, paginateOpts], async (req, res) => {
     try {
         const users = await User.paginate({}, req.paginateOpts);
         // Send the users back as an object, since that allows us to expand it in the future with additional properties.
@@ -44,11 +50,13 @@ router.get('/users', authenticate, adminRequired, paginateOpts, async (req, res)
     }
 });
 
-router.get('/users/me', authenticate, async (req, res) => {
-    res.send(req.user);
+router.get('/users/me', [isAuthenticated], async (req, res) => {
+    // Not adding the isVerified permission check to this route, so volunteers will always have access to their own profiles, even after they have been removed from the project.
+    res.send({user: req.user});
 });
 
-router.patch('/users/me', authenticate, async (req, res) => {
+router.patch('/users/me', [isAuthenticated], async (req, res) => {
+    // Not adding the isVerified permission check to this route, so volunteers will always have access to their own profiles, even after they have been removed from the project.
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'email', 'password'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -62,19 +70,22 @@ router.patch('/users/me', authenticate, async (req, res) => {
     try {
         updates.forEach((update) => req.user[update] = req.body[update]);
         await req.user.save();
-        res.send(req.user);
+        res.send({user: req.user});
     } catch (e) {
         res.status(400).send(e);
     }
 });
 
-router.get('/users/:id', authenticate, validateID, async (req, res) => {
+router.get('/users/:id', [isAuthenticated, validateID], async (req, res) => {
     try {
-        if ((req.user.id == req.id) || (req.user.admin === true)) {
+        // We need to do another permission check here, rather than in middleware, because we need to check against route variables.
+        // Any user, verified or not, should be able to access their profile.
+        // However, only verified admins should have this ability.
+        if ((req.user.id == req.id) || (req.user.admin === true && req.user.verified === true)) {
             const user = await User.findById(req.id);
-            res.send(user);
+            res.send({user});
         } else {
-            res.sendStatus(401);
+            res.status(401).send({error: 'Unauthorized to view this page'});
         }
         
     } catch (e) {
@@ -82,9 +93,9 @@ router.get('/users/:id', authenticate, validateID, async (req, res) => {
     }
 });
 
-router.patch('/users/:id', authenticate, validateID, async (req, res) => {
+router.patch('/users/:id', [isAuthenticated, validateID], async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['name', 'email', 'password'];
+    const allowedUpdates = ['name', 'email', 'password', 'verified'];
     const isValidOperation = updates.every( update => allowedUpdates.includes(update));
 
     // only allow updates if valid updates.
@@ -95,8 +106,23 @@ router.patch('/users/:id', authenticate, validateID, async (req, res) => {
     }
     
     try {
-        if ((req.user.id == req.id) || (req.user.admin === true)){
+        // We need to do another permission check here, rather than in middleware, because we need to check against route variables.
+        // Any user, verified or not, should be able to change their profile.
+        // However, only verified admins should have this ability.
+        if ((req.user.id == req.id) || (req.user.admin && req.user.verified)) {
             const user = await User.findById(req.id);
+            
+            // Only allow admins to modify the 'verified' field.
+            if (updates.includes('verified')){
+                updates.pop('verified');
+                    if(req.user.admin && req.user.verified){
+                        user.verified = req.body.verified;
+                    } else {
+                        return res.status(400).send({
+                            error: 'Invalid Fields Submitted.'
+                        });
+                    }
+            }
             updates.forEach((update) => user[update] = req.body[update]);
             await user.save();
             res.send({user});
@@ -108,9 +134,12 @@ router.patch('/users/:id', authenticate, validateID, async (req, res) => {
     };
 });
 
-router.delete('/users/:id', authenticate, validateID, async (req, res) => {
+router.delete('/users/:id', [isAuthenticated, validateID], async (req, res) => {
     try {
-        if ((req.id == req.user._id) || (req.user.admin === true)){
+        // We need to do another permission check here, rather than in middleware, because we need to check against route variables.
+        // Any user, verified or not, should be able to delete their profile.
+        // However, only verified admins should have this ability.
+        if ((req.user.id == req.id) || (req.user.admin === true && req.user.verified === true)) {
             const user = await User.findByIdAndDelete(req.id);
             if(!user) {
                 return res.sendStatus(404);

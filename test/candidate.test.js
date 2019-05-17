@@ -45,12 +45,13 @@ describe('POST /candidates', () => {
         name: 'Jane Smith',
         party: parties[0].name
     };
-    const token = tokens[0];
+    const verifiedToken = tokens[0];
+    const unverifiedToken = tokens[1];
 
-    it('should create a candidate in existing party if user is authorized', async () => {
+    it('should create a candidate in existing party if user is verified', async () => {
         const res = await request(app)
             .post('/candidates')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${verifiedToken}`)
             .send(candidate)
             .expect(201);
         expect(res.body.candidate.name).toBe(candidate.name);
@@ -63,7 +64,7 @@ describe('POST /candidates', () => {
         expect(newCandidate.party._id).toEqual(parties[0]._id);
     });
 
-    it('should create candidate and add party if user is authorized', async () => {
+    it('should create candidate and add party if user is verified', async () => {
         const candidateParty = {
             name: 'Louise Belcher',
             party: 'Star-Bellied Sneetches'
@@ -71,7 +72,7 @@ describe('POST /candidates', () => {
         
         const res = await request(app)
             .post('/candidates')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${verifiedToken}`)
             .send(candidateParty)
             .expect(201);
         expect(res.body.candidate.name).toBe(candidateParty.name);
@@ -92,7 +93,7 @@ describe('POST /candidates', () => {
         
         await request(app)
             .post('/candidates')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${verifiedToken}`)
             .send(candidateParty)
             .expect(400);
     });
@@ -106,7 +107,7 @@ describe('POST /candidates', () => {
         
         await request(app)
             .post('/candidates')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${verifiedToken}`)
             .send(candidateParty)
             .expect(400);
     });
@@ -120,14 +121,22 @@ describe('POST /candidates', () => {
         
         await request(app)
             .post('/candidates')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${verifiedToken}`)
             .send(candidateParty)
             .expect(400);
     });
 
-    it('should not create candidate if user unauthorized', async () => {        
+    it('should not create candidate if user not logged in', async () => {        
         await request(app)
             .post('/candidates')
+            .send(candidate)
+            .expect(401);
+    });
+
+    it('should not create candidate if user not verified', async () => {        
+        await request(app)
+            .post('/candidates')
+            .set('Authorization', `Bearer ${unverifiedToken}`)
             .send(candidate)
             .expect(401);
     });
@@ -135,7 +144,7 @@ describe('POST /candidates', () => {
     it('should not create candidate if correct fields not supplied', async () => {
         const res = await request(app)
             .post('/candidates')
-            .set('Authorization', `Bearer ${token}`)
+            .set('Authorization', `Bearer ${verifiedToken}`)
             .send({'random': 'field'})
             .expect(400);
         expect(res.body.error).toBe('Invalid Fields Submitted.')
@@ -143,7 +152,7 @@ describe('POST /candidates', () => {
 });
 
 describe('PATCH /candidates/:id', () => {
-    it('should update candidate data if authorized', async () => {
+    it('should update candidate data if verified', async () => {
         const token = tokens[0];
         const candidate = candidates[0];
         const body = {name: 'Johannes Smythe'};
@@ -159,7 +168,7 @@ describe('PATCH /candidates/:id', () => {
         expect(updatedCandidate.name).toBe(body.name);
     });
 
-    it('should update candidate party if authorized', async () => {
+    it('should update candidate party if verified', async () => {
         const token = tokens[0];
         const candidate = candidates[0];
         const body = {party: 'Star-Bellied Sneetches'};
@@ -190,12 +199,27 @@ describe('PATCH /candidates/:id', () => {
         expect(res.body.candidate.party._id).toBe(parties[0]._id.toHexString());
     });
 
-    it('should not update candidate data if unauthorized', async () => {
+    it('should not update candidate data if not signed in', async () => {
         const candidate = candidates[0];
         const body = {name: 'Johannes Smythe'};
 
         const res = await request(app)
             .patch(`/candidates/${candidate._id}`)
+            .send(body)
+            .expect(401);
+        
+        const updatedCandidate = await Candidate.findById(candidate._id);
+        expect(updatedCandidate.name).toBe(candidate.name);
+    });
+
+    it('should not update candidate data if not verified', async () => {
+        const candidate = candidates[0];
+        const token = tokens[1];
+        const body = {name: 'Johannes Smythe'};
+
+        const res = await request(app)
+            .patch(`/candidates/${candidate._id}`)
+            .send('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(401);
         

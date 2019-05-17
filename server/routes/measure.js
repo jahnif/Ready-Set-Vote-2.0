@@ -1,15 +1,20 @@
 const express = require('express');
 
-const adminRequired = require('../middleware/adminRequired');
-const authenticate = require('../middleware/authenticate');
+// Models
+const Measure = require('../models/measure');
+
+// Permissions Middleware
+const isAdmin = require('../middleware/auth/isAdmin');
+const isAuthenticated = require('../middleware/auth/isAuthenticated');
+const isVerified = require('../middleware/auth/isVerified');
+
+// Misc. Middleware
 const validateID = require('../middleware/validateID');
 const paginateOpts = require('../middleware/paginateOpts');
 
-const Measure = require('../models/measure');
-
 const router = new express.Router();
 
-router.post('/measures', authenticate, async (req, res) => {
+router.post('/measures', [isAuthenticated, isVerified], async (req, res) => {
     const fields = Object.keys(req.body);
     const allowedFields = ['title', 'description', 'options'];
     const validFields = fields.every((field) => allowedFields.includes(field));
@@ -27,7 +32,7 @@ router.post('/measures', authenticate, async (req, res) => {
     };
 });
 
-router.get('/measures', paginateOpts, async (req, res) => {
+router.get('/measures', [paginateOpts], async (req, res) => {
     try {
         const measures = await Measure.paginate({}, req.paginateOpts);
         return res.send({ 
@@ -39,9 +44,9 @@ router.get('/measures', paginateOpts, async (req, res) => {
     } catch(e) {
         res.status(500).send(e);
     }
-})
+});
 
-router.get('/measures/:id', validateID, async (req, res) => {
+router.get('/measures/:id', [validateID], async (req, res) => {
     // TODO - Populate endorsements.
     try {
         const measure = await Measure.findById(req.id);    
@@ -55,7 +60,7 @@ router.get('/measures/:id', validateID, async (req, res) => {
     };
 });
 
-router.patch('/measures/:id', authenticate, validateID, async (req, res) => {
+router.patch('/measures/:id', [isAuthenticated, isVerified, validateID], async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['title', 'description', 'options' ];
     const isValidOperation = updates.every( update => allowedUpdates.includes(update));
@@ -76,7 +81,7 @@ router.patch('/measures/:id', authenticate, validateID, async (req, res) => {
     };
 });
 
-router.delete('/measures/:id', authenticate, adminRequired, validateID, async (req, res) => {
+router.delete('/measures/:id', [isAuthenticated, isAdmin, validateID], async (req, res) => {
     try {
         const measure = await Measure.findByIdAndDelete(req.id);
         if (!measure) {

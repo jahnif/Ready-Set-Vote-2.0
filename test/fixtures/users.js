@@ -15,7 +15,8 @@ const users = [{
     _id: userOneId,
     name: 'Dustin',
     email: 'dustin@example.com',
-    password: 'hunter21'
+    password: 'hunter21',
+    verified: true
 }, {
     _id: userTwoId,
     name: 'Darryl',
@@ -27,6 +28,7 @@ const users = [{
     email: 'joseph.p@example.com',
     password: 'hellaSecure',
     admin: true,
+    verified: true
 }];
 
 module.exports = {

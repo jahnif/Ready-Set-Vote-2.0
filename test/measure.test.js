@@ -72,7 +72,7 @@ describe('GET /measures/:id', () => {
 });
 
 describe('POST /measures', () => {
-    it('should create measure if user is authorized', async () => {
+    it('should create measure if user is verified', async () => {
         const measure = {
             title: 'Jump Rope',
             description: 'Should we jump rope?',
@@ -109,7 +109,7 @@ describe('POST /measures', () => {
             .expect(400);
     });
 
-    it('should not create measure if user unauthorized', async () => {
+    it('should not create measure if user not logged in', async () => {
         const measure = {
             title: 'Jump Rope',
             description: 'Should we jump rope?',
@@ -118,6 +118,21 @@ describe('POST /measures', () => {
 
         await request(app)
             .post('/measures')
+            .send(measure)
+            .expect(401);
+    });
+
+    it('should not create measure if user not verified', async () => {
+        const measure = {
+            title: 'Jump Rope',
+            description: 'Should we jump rope?',
+            options: ['yes', 'no']
+        };
+        const token = tokens[1];
+
+        await request(app)
+            .post('/measures')
+            .set('Authorization', `Bearer ${token}`)
             .send(measure)
             .expect(401);
     });
@@ -139,7 +154,7 @@ describe('POST /measures', () => {
 });
 
 describe('PATCH /measures/:id', () => {
-    it('should update measure data if authorized', async () => {
+    it('should update measure data if verified', async () => {
         const token = tokens[0];
         const measure = measures[0];
         const body = {title: 'Jump Rope'};
@@ -155,12 +170,27 @@ describe('PATCH /measures/:id', () => {
         expect(updatedMeasure.name).toBe(body.name);
     });
 
-    it('should not update endorser data if unauthorized', async () => {
+    it('should not update endorser data if not logged in', async () => {
         const measure = measures[0];
         const body = {title: 'Jump Rope'};
 
         const res = await request(app)
             .patch(`/measures/${measure._id}`)
+            .send(body)
+            .expect(401);
+        
+        const updatedMeasure = await Measure.findById(measure._id);
+        expect(updatedMeasure.name).toBe(measure.name);
+    });
+
+    it('should not update endorser data if not verified', async () => {
+        const measure = measures[0];
+        const body = {title: 'Jump Rope'};
+        const token = tokens[1];
+
+        const res = await request(app)
+            .patch(`/measures/${measure._id}`)
+            .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(401);
         

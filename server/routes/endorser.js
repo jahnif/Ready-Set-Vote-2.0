@@ -1,15 +1,20 @@
 const express = require('express');
 
-const adminRequired = require('../middleware/adminRequired');
-const authenticate = require('../middleware/authenticate');
+// Models
+const Endorser = require('../models/endorser');
+
+// Permissions Middleware
+const isAdmin = require('../middleware/auth/isAdmin');
+const isAuthenticated = require('../middleware/auth/isAuthenticated');
+const isVerified = require('../middleware/auth/isVerified');
+
+// Misc. Middleware
 const validateID = require('../middleware/validateID');
 const paginateOpts = require('../middleware/paginateOpts');
 
-const Endorser = require('../models/endorser');
-
 const router = new express.Router();
 
-router.post('/endorsers', authenticate, async (req, res) => {
+router.post('/endorsers', [isAuthenticated, isVerified], async (req, res) => {
     const fields = Object.keys(req.body);
     const allowedFields = ['name', 'url', 'sortOrder', 'imageUrl'];
     const validFields = fields.every((field) => allowedFields.includes(field));
@@ -27,7 +32,7 @@ router.post('/endorsers', authenticate, async (req, res) => {
     };
 });
 
-router.get('/endorsers', paginateOpts, async (req, res) => {
+router.get('/endorsers', [paginateOpts], async (req, res) => {
     try {
         const endorsers = await Endorser.paginate({}, req.paginateOpts);
         return res.send({
@@ -41,7 +46,7 @@ router.get('/endorsers', paginateOpts, async (req, res) => {
     }
 })
 
-router.get('/endorsers/:id', validateID, async (req, res) => {
+router.get('/endorsers/:id', [validateID], async (req, res) => {
     try {
         const endorser = await Endorser.findById(req.id);    
         if (endorser) {
@@ -54,7 +59,7 @@ router.get('/endorsers/:id', validateID, async (req, res) => {
     };
 });
 
-router.patch('/endorsers/:id', authenticate, validateID, async (req, res) => {
+router.patch('/endorsers/:id', [isAuthenticated, isVerified, validateID], async (req, res) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['name', 'url', 'sortOrder', 'imageUrl'];
     const isValidOperation = updates.every( update => allowedUpdates.includes(update));
@@ -75,7 +80,7 @@ router.patch('/endorsers/:id', authenticate, validateID, async (req, res) => {
     };
 });
 
-router.delete('/endorsers/:id', authenticate, adminRequired, validateID, async (req, res) => {
+router.delete('/endorsers/:id', [isAuthenticated, isAdmin, validateID], async (req, res) => {
     try {
         const endorser = await Endorser.findByIdAndDelete(req.id);
         if (!endorser) {
