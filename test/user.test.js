@@ -111,8 +111,8 @@ describe('GET /users/me', () => {
             .get('/users/me')
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
-        expect(res.body._id).toBe(user._id.toString());
-        expect(res.body.name).toBe(user.name);
+        expect(res.body.user._id).toBe(user._id.toString());
+        expect(res.body.user.name).toBe(user.name);
     });
 });
 
@@ -125,8 +125,8 @@ describe('GET /users/:id', () => {
             .get(`/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
-        expect(res.body._id).toBe(user._id.toString());
-        expect(res.body.name).toBe(user.name);
+        expect(res.body.user._id).toBe(user._id.toString());
+        expect(res.body.user.name).toBe(user.name);
     });
     
     it('should return user object if Admin', async () => {
@@ -138,8 +138,8 @@ describe('GET /users/:id', () => {
             .get(`/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
-        expect(res.body._id).toBe(user._id.toString());
-        expect(res.body.name).toBe(user.name);
+        expect(res.body.user._id).toBe(user._id.toString());
+        expect(res.body.user.name).toBe(user.name);
     });
 
     it('should return 400 if incorrect userID requested', async () => {
@@ -173,7 +173,7 @@ describe('PATCH /users/me', () => {
             .patch('/users/me').set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
-        expect(res.body.name).toBe('Janet');
+        expect(res.body.user.name).toBe('Janet');
     });
 
     it('should not update user\'s own data with invalid input', async () => {
@@ -212,11 +212,11 @@ describe('PATCH /users/:id', () => {
         const token = tokens[1];
         const body = {verified: 'true'}
 
-        const res = await request(app)
+        await request(app)
             .patch(`/users/${user._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
-            .expect(200);
+            .expect(400);
 
         const updatedUser = await User.findById(user._id);
         expect(updatedUser.verified).toBe(false);
