@@ -31,6 +31,8 @@ router.post('/users', async (req, res) => {
         const token = await user.generateAuthToken();
         res.status(201).send({token, user});
     } catch(e) {
+        if(e.message.indexOf('duplicate key'))
+            e = `User ${user.email} already exists`
         res.status(400).send(e);
     }
 });

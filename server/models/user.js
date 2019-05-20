@@ -53,7 +53,7 @@ UserSchema.methods.generateAuthToken = async function() {
 };
 
 UserSchema.statics.findByCredentials = async (email, password) => {
-    const user = await User.findOne({email})
+    const user = await User.findOne({email: email.toLowerCase()})
     if(!user) {
         throw new Error('Unable to login')
     }
@@ -66,10 +66,10 @@ UserSchema.statics.findByCredentials = async (email, password) => {
     return user
 };
 
-// Hash plaintext password before saving
+// Hash plaintext password before saving; ensure emails are truly unique
 UserSchema.pre('save', async function (next) {
     const user = this;
-
+    user.email = user.email.toLowerCase()
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8)
     } 
