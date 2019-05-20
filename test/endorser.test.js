@@ -10,10 +10,10 @@ const { tokens } = require('./fixtures/users');
 
 beforeAll(setupEndorsers);
 
-describe('GET /endorsers', () => {
+describe('GET /api/endorsers', () => {
     it('should return a  paginated list of endorsers (limit 10, offset 0) when no params provided', async () => {
         const res = await request(app)
-            .get('/endorsers')
+            .get('/api/endorsers')
             .expect(200);
         expect(res.body.endorsers.length).toBe(2);
         expect(res.body.endorserCount).toBe(2);
@@ -21,7 +21,7 @@ describe('GET /endorsers', () => {
     
     it('should return a  paginated list of endorsers when params provided', async () => {
         const res = await request(app)
-            .get('/endorsers?limit=1&offset=1')
+            .get('/api/endorsers?limit=1&offset=1')
             .expect(200);
         expect(res.body.endorsers.length).toBe(1);
         expect(res.body.endorsers[0].name).toBe(endorsers[1].name);
@@ -30,7 +30,7 @@ describe('GET /endorsers', () => {
 
     it('should return a list of sorted endorsers when params provided', async () => {
         const res = await request(app)
-            .get('/endorsers/?sortBy=name:asc')
+            .get('/api/endorsers/?sortBy=name:asc')
             .expect(200);
         expect(res.body.endorsers.length).toBe(2);
         expect(res.body.endorsers[0].name).toBe(endorsers[1].name);
@@ -38,12 +38,12 @@ describe('GET /endorsers', () => {
     }); 
 });
 
-describe('GET /endorsers/:id', () => {
+describe('GET /api/endorsers/:id', () => {
     it('should return endorser by id', async () => {
         const endorser = endorsers[0];
         
         const res = await request(app)
-            .get(`/endorsers/${endorser._id}`)
+            .get(`/api/endorsers/${endorser._id}`)
             .expect(200);
         expect(res.body.endorser._id).toBe(endorser._id.toHexString());
         expect(res.body.endorser.name).toBe(endorser.name);
@@ -54,7 +54,7 @@ describe('GET /endorsers/:id', () => {
         const endorser = endorsers[0];
 
         await request(app)
-            .get(`/endorsers/${endorser._id}1`)
+            .get(`/api/endorsers/${endorser._id}1`)
             .expect(400);
     });
 
@@ -62,12 +62,12 @@ describe('GET /endorsers/:id', () => {
         const endorser = new ObjectID().toString();
 
         await request(app)
-            .get(`/endorsers/${endorser}`)
+            .get(`/api/endorsers/${endorser}`)
             .expect(404);
     });
 });
 
-describe('POST /endorsers', () => {
+describe('POST /api/endorsers', () => {
     beforeAll(setupUsers);
     it('should create endorser if user is authorized', async () => {
         const endorser = {
@@ -78,7 +78,7 @@ describe('POST /endorsers', () => {
         const token = tokens[0];
 
         const res = await request(app)
-            .post('/endorsers')
+            .post('/api/endorsers')
             .set('Authorization', `Bearer ${token}`)
             .send(endorser)
             .expect(201);
@@ -99,7 +99,7 @@ describe('POST /endorsers', () => {
         };
 
         const res = await request(app)
-            .post('/endorsers')
+            .post('/api/endorsers')
             .send(endorser)
             .expect(401);
     });
@@ -112,7 +112,7 @@ describe('POST /endorsers', () => {
         const token = tokens[0];
         
         const res = await request(app)
-            .post('/endorsers')
+            .post('/api/endorsers')
             .set('Authorization', `Bearer ${token}`)
             .send({'random': 'field'})
             .expect(400);
@@ -120,7 +120,7 @@ describe('POST /endorsers', () => {
     });
 });
 
-describe('PATCH /endorsers/:id', () => {
+describe('PATCH /api/endorsers/:id', () => {
     beforeAll(setupUsers);
     it('should update endorser data if authorized', async () => {
         const token = tokens[0];
@@ -128,7 +128,7 @@ describe('PATCH /endorsers/:id', () => {
         const body = {name: 'The Mint'};
 
         const res = await request(app)
-            .patch(`/endorsers/${endorser._id}`)
+            .patch(`/api/endorsers/${endorser._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
@@ -143,7 +143,7 @@ describe('PATCH /endorsers/:id', () => {
         const body = {name: 'The Times'};
 
         const res = await request(app)
-            .patch(`/endorsers/${endorser._id}`)
+            .patch(`/api/endorsers/${endorser._id}`)
             .send(body)
             .expect(401);
         
@@ -156,7 +156,7 @@ describe('PATCH /endorsers/:id', () => {
         const hexID = new ObjectID().toString();
 
         await request(app)
-            .patch(`/endorsers/${hexID}1`)
+            .patch(`/api/endorsers/${hexID}1`)
             .set('Authorization', `Bearer ${token}`)
             .expect(400);
     });
@@ -166,7 +166,7 @@ describe('PATCH /endorsers/:id', () => {
         const hexID = new ObjectID().toString();
 
         await request(app)
-            .patch(`/endorsers/${hexID}`)
+            .patch(`/api/endorsers/${hexID}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(400);
     });
@@ -177,7 +177,7 @@ describe('PATCH /endorsers/:id', () => {
         const body = {random: 'field'};
         
         const res = await request(app)
-            .patch(`/endorsers/${endorser._id}`)
+            .patch(`/api/endorsers/${endorser._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(400);
@@ -186,7 +186,7 @@ describe('PATCH /endorsers/:id', () => {
     });
 });
 
-describe('DELETE /endorsers/:id', () => {
+describe('DELETE /api/endorsers/:id', () => {
     beforeAll(setupUsers);
 
     it('should delete endorser if admin', async () => {
@@ -194,7 +194,7 @@ describe('DELETE /endorsers/:id', () => {
         const endorser = endorsers[0];
 
         await request(app)
-            .delete(`/endorsers/${endorser._id}`)
+            .delete(`/api/endorsers/${endorser._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         
@@ -207,7 +207,7 @@ describe('DELETE /endorsers/:id', () => {
         const endorser = endorsers[1];
 
         await request(app)
-            .delete(`/endorsers/${endorser._id}`)
+            .delete(`/api/endorsers/${endorser._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
         

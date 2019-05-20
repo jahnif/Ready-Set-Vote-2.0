@@ -11,12 +11,12 @@ const { tokens } = require('./fixtures/users');
 
 beforeAll(setupCandidates);
 
-describe('GET /candidates/:id', () => {
+describe('GET /api/candidates/:id', () => {
     it('should return candidate by id', async () => {
         const candidate = candidates[0];
 
         const res = await request(app)
-            .get(`/candidates/${candidate._id}`)
+            .get(`/api/candidates/${candidate._id}`)
             .expect(200);
         expect(res.body.candidate._id).toBe(candidate._id.toString());
         expect(res.body.candidate.name).toBe(candidate.name);
@@ -27,7 +27,7 @@ describe('GET /candidates/:id', () => {
         const candidate = candidates[0];
 
         await request(app)
-            .get(`/candidates/${candidate._id}1`)
+            .get(`/api/candidates/${candidate._id}1`)
             .expect(400);
     });
 
@@ -35,12 +35,12 @@ describe('GET /candidates/:id', () => {
         const candidate = new ObjectID().toString();
 
         await request(app)
-            .get(`/candidates/${candidate}`)
+            .get(`/api/candidates/${candidate}`)
             .expect(404);
     });
 });
 
-describe('POST /candidates', () => {
+describe('POST /api/candidates', () => {
     beforeAll(setupUsers);
 
     const candidate = {
@@ -52,7 +52,7 @@ describe('POST /candidates', () => {
 
     it('should create a candidate in existing party if user is verified', async () => {
         const res = await request(app)
-            .post('/candidates')
+            .post('/api/candidates')
             .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidate)
             .expect(201);
@@ -73,7 +73,7 @@ describe('POST /candidates', () => {
         };
         
         const res = await request(app)
-            .post('/candidates')
+            .post('/api/candidates')
             .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidateParty)
             .expect(201);
@@ -94,7 +94,7 @@ describe('POST /candidates', () => {
         };
         
         await request(app)
-            .post('/candidates')
+            .post('/api/candidates')
             .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidateParty)
             .expect(400);
@@ -108,7 +108,7 @@ describe('POST /candidates', () => {
         };
         
         await request(app)
-            .post('/candidates')
+            .post('/api/candidates')
             .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidateParty)
             .expect(400);
@@ -122,7 +122,7 @@ describe('POST /candidates', () => {
         };
         
         await request(app)
-            .post('/candidates')
+            .post('/api/candidates')
             .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidateParty)
             .expect(400);
@@ -130,14 +130,14 @@ describe('POST /candidates', () => {
 
     it('should not create candidate if user not logged in', async () => {        
         await request(app)
-            .post('/candidates')
+            .post('/api/candidates')
             .send(candidate)
             .expect(401);
     });
 
     it('should not create candidate if user not verified', async () => {        
         await request(app)
-            .post('/candidates')
+            .post('/api/candidates')
             .set('Authorization', `Bearer ${unverifiedUserToken}`)
             .send(candidate)
             .expect(401);
@@ -145,7 +145,7 @@ describe('POST /candidates', () => {
 
     it('should not create candidate if correct fields not supplied', async () => {
         const res = await request(app)
-            .post('/candidates')
+            .post('/api/candidates')
             .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send({'random': 'field'})
             .expect(400);
@@ -153,7 +153,7 @@ describe('POST /candidates', () => {
     });
 });
 
-describe('PATCH /candidates/:id', () => {
+describe('PATCH /api/candidates/:id', () => {
     beforeAll(setupUsers);
 
     it('should update candidate data if verified', async () => {
@@ -162,7 +162,7 @@ describe('PATCH /candidates/:id', () => {
         const body = {name: 'Johannes Smythe'};
 
         const res = await request(app)
-            .patch(`/candidates/${candidate._id}`)
+            .patch(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
@@ -178,7 +178,7 @@ describe('PATCH /candidates/:id', () => {
         const body = {party: 'Star-Bellied Sneetches'};
 
         const res = await request(app)
-            .patch(`/candidates/${candidate._id}`)
+            .patch(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
@@ -196,7 +196,7 @@ describe('PATCH /candidates/:id', () => {
         };
 
         const res = await request(app)
-            .patch(`/candidates/${candidate._id}`)
+            .patch(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
@@ -208,7 +208,7 @@ describe('PATCH /candidates/:id', () => {
         const body = {name: 'Joe Smith'};
 
         const res = await request(app)
-            .patch(`/candidates/${candidate._id}`)
+            .patch(`/api/candidates/${candidate._id}`)
             .send(body)
             .expect(401);
         
@@ -222,7 +222,7 @@ describe('PATCH /candidates/:id', () => {
         const body = {name: 'Joan Smitts'};
 
         const res = await request(app)
-            .patch(`/candidates/${candidate._id}`)
+            .patch(`/api/candidates/${candidate._id}`)
             .send('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(401);
@@ -236,7 +236,7 @@ describe('PATCH /candidates/:id', () => {
         const hexID = new ObjectID().toString();
 
         await request(app)
-            .patch(`/candidates/${hexID}1`)
+            .patch(`/api/candidates/${hexID}1`)
             .set('Authorization', `Bearer ${token}`)
             .expect(400);
     });
@@ -246,7 +246,7 @@ describe('PATCH /candidates/:id', () => {
         const hexID = new ObjectID().toString();
 
         await request(app)
-            .patch(`/candidates/${hexID}`)
+            .patch(`/api/candidates/${hexID}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(400);
     });
@@ -257,7 +257,7 @@ describe('PATCH /candidates/:id', () => {
         const body = {random: 'field'};
         
         const res = await request(app)
-            .patch(`/candidates/${candidate._id}`)
+            .patch(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(400);
@@ -266,7 +266,7 @@ describe('PATCH /candidates/:id', () => {
     });
 });
 
-describe('DELETE /candidates/:id', () => {
+describe('DELETE /api/candidates/:id', () => {
     beforeAll(setupUsers);
 
     it('should delete candidate if admin', async () => {
@@ -274,7 +274,7 @@ describe('DELETE /candidates/:id', () => {
         const candidate = candidates[0];
 
         await request(app)
-            .delete(`/candidates/${candidate._id}`)
+            .delete(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         
@@ -287,7 +287,7 @@ describe('DELETE /candidates/:id', () => {
         const candidate = candidates[1];
 
         await request(app)
-            .delete(`/candidates/${candidate._id}`)
+            .delete(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
         

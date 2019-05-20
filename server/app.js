@@ -17,10 +17,10 @@ app.use(express.json());
 app.use(cors());
 
 // Register Routes
-app.use(candidateRouter);
-app.use(endorserRouter);
-app.use(measureRouter);
-app.use(userRouter);
+app.use('/api', candidateRouter);
+app.use('/api', endorserRouter);
+app.use('/api', measureRouter);
+app.use('/api', userRouter);
 
 if (process.env.NODE_ENV === 'production') {    
     app.use(express.static(path.join(__dirname, '..', '/client/build')));
