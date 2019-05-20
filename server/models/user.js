@@ -66,7 +66,7 @@ UserSchema.statics.findByCredentials = async (email, password) => {
     return user
 };
 
-// Hash plaintext password before saving.
+// Hash plaintext password before saving
 UserSchema.pre('save', async function (next) {
     const user = this;
 
