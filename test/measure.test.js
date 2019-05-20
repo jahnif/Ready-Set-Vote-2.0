@@ -10,11 +10,11 @@ const { tokens } = require('./fixtures/users');
 
 beforeEach(setupDatabase);
 
-describe('GET /measures', () => {
+describe('GET /api/measures', () => {
     it('should return a list of paginated measures (limit: 10, offset: 0) when no params provided', async () => {
 
         const res = await request(app)
-            .get('/measures')
+            .get('/api/measures')
             .expect(200);
         expect(res.body.measures.length).toBe(2);
         expect(res.body.measuresCount).toBe(2);
@@ -25,7 +25,7 @@ describe('GET /measures', () => {
     it('should return a list of paginated measures when params provided', async () => {
 
         const res = await request(app)
-            .get('/measures?limit=1&offset=1')
+            .get('/api/measures?limit=1&offset=1')
             .expect(200);
         expect(res.body.measures.length).toBe(1);
         expect(res.body.measuresCount).toBe(2);
@@ -35,7 +35,7 @@ describe('GET /measures', () => {
     it('should return a list of sorted measures when params provided', async () => {
 
         const res = await request(app)
-            .get('/measures?sortBy=title:desc')
+            .get('/api/measures?sortBy=title:desc')
             .expect(200);
         expect(res.body.measures.length).toBe(2);
         expect(res.body.measuresCount).toBe(2);
@@ -43,12 +43,12 @@ describe('GET /measures', () => {
     });
 });
 
-describe('GET /measures/:id', () => {
+describe('GET /api/measures/:id', () => {
     it('should return measure by id', async () => {
         const measure = measures[0];
 
         const res = await request(app)
-            .get(`/measures/${measure._id}`)
+            .get(`/api/measures/${measure._id}`)
             .expect(200);
         expect(res.body.measure._id).toBe(measure._id.toString());
         expect(res.body.measure.title).toBe(measure.title);
@@ -58,7 +58,7 @@ describe('GET /measures/:id', () => {
         const measure = measures[0];
 
         await request(app)
-            .get(`/measures/${measure._id}1`)
+            .get(`/api/measures/${measure._id}1`)
             .expect(400);
     });
 
@@ -66,12 +66,12 @@ describe('GET /measures/:id', () => {
         const measure = new ObjectID().toString();
 
         await request(app)
-            .get(`/measures/${measure}`)
+            .get(`/api/measures/${measure}`)
             .expect(404);
     });
 });
 
-describe('POST /measures', () => {
+describe('POST /api/measures', () => {
     it('should create measure if user is verified', async () => {
         const measure = {
             title: 'Jump Rope',
@@ -81,7 +81,7 @@ describe('POST /measures', () => {
         const token = tokens[0];
 
         const res = await request(app)
-            .post('/measures')
+            .post('/api/measures')
             .set('Authorization', `Bearer ${token}`)
             .send(measure)
             .expect(201);
@@ -103,7 +103,7 @@ describe('POST /measures', () => {
         const token = tokens[0];
 
         const res = await request(app)
-            .post('/measures')
+            .post('/api/measures')
             .set('Authorization', `Bearer ${token}`)
             .send(measure)
             .expect(400);
@@ -117,7 +117,7 @@ describe('POST /measures', () => {
         };
 
         await request(app)
-            .post('/measures')
+            .post('/api/measures')
             .send(measure)
             .expect(401);
     });
@@ -131,7 +131,7 @@ describe('POST /measures', () => {
         const token = tokens[1];
 
         await request(app)
-            .post('/measures')
+            .post('/api/measures')
             .set('Authorization', `Bearer ${token}`)
             .send(measure)
             .expect(401);
@@ -145,7 +145,7 @@ describe('POST /measures', () => {
         const token = tokens[0];
         
         const res = await request(app)
-            .post('/measures')
+            .post('/api/measures')
             .set('Authorization', `Bearer ${token}`)
             .send(measure)
             .expect(400);
@@ -153,14 +153,14 @@ describe('POST /measures', () => {
     });
 });
 
-describe('PATCH /measures/:id', () => {
+describe('PATCH /api/measures/:id', () => {
     it('should update measure data if verified', async () => {
         const token = tokens[0];
         const measure = measures[0];
         const body = {title: 'Jump Rope'};
 
         const res = await request(app)
-            .patch(`/measures/${measure._id}`)
+            .patch(`/api/measures/${measure._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
@@ -175,7 +175,7 @@ describe('PATCH /measures/:id', () => {
         const body = {title: 'Jump Rope'};
 
         const res = await request(app)
-            .patch(`/measures/${measure._id}`)
+            .patch(`/api/measures/${measure._id}`)
             .send(body)
             .expect(401);
         
@@ -189,7 +189,7 @@ describe('PATCH /measures/:id', () => {
         const token = tokens[1];
 
         const res = await request(app)
-            .patch(`/measures/${measure._id}`)
+            .patch(`/api/measures/${measure._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(401);
@@ -203,7 +203,7 @@ describe('PATCH /measures/:id', () => {
         const hexID = new ObjectID().toString();
 
         await request(app)
-            .patch(`/measures/${hexID}1`)
+            .patch(`/api/measures/${hexID}1`)
             .set('Authorization', `Bearer ${token}`)
             .expect(400);
     });
@@ -213,7 +213,7 @@ describe('PATCH /measures/:id', () => {
         const hexID = new ObjectID().toString();
 
         await request(app)
-            .patch(`/measures/${hexID}`)
+            .patch(`/api/measures/${hexID}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(400);
     });
@@ -224,7 +224,7 @@ describe('PATCH /measures/:id', () => {
         const body = {random: 'field'};
         
         const res = await request(app)
-            .patch(`/measures/${measure._id}`)
+            .patch(`/api/measures/${measure._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(400);
@@ -233,13 +233,13 @@ describe('PATCH /measures/:id', () => {
     });
 });
 
-describe('DELETE /measures/:id', () => {
+describe('DELETE /api/measures/:id', () => {
     it('should delete measure if admin', async () => {
         const token = tokens[2];
         const measure = measures[0];
 
         await request(app)
-            .delete(`/measures/${measure._id}`)
+            .delete(`/api/measures/${measure._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         
@@ -252,7 +252,7 @@ describe('DELETE /measures/:id', () => {
         const measure = measures[0];
 
         await request(app)
-            .delete(`/measures/${measure._id}`)
+            .delete(`/api/measures/${measure._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
         

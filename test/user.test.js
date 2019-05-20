@@ -9,12 +9,12 @@ const { users, tokens } = require('./fixtures/users')
 
 beforeEach(setupDatabase);
 
-describe('GET /users', () => {
+describe('GET /api/users', () => {
     it('should return paginated user list (offset: 0, limit: 10) if admin', async () => {
         const token = tokens[2];
 
         const res = await request(app)
-            .get('/users')
+            .get('/api/users')
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         expect(res.body.userCount).toBe(3);
@@ -27,7 +27,7 @@ describe('GET /users', () => {
         const token = tokens[2];
 
         const res = await request(app)
-            .get('/users?offset=2&limit=1')
+            .get('/api/users?offset=2&limit=1')
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         expect(res.body.userCount).toBe(3);
@@ -39,12 +39,12 @@ describe('GET /users', () => {
 
     it('should return 401 if not admin', async () => {
         await request(app)
-            .get('/users')
+            .get('/api/users')
             .expect(401);
     });
 });
 
-describe('POST /users', () => {
+describe('POST /api/users', () => {
     
     it('should create a user', async () => {
         const email = 'example@example.com';
@@ -52,7 +52,7 @@ describe('POST /users', () => {
         const name = 'example';
 
         const res = await request(app)
-            .post('/users')
+            .post('/api/users')
             .send({name, email, password})
             .expect(201);
         
@@ -70,7 +70,7 @@ describe('POST /users', () => {
         const password = '';
 
         const res = await request(app)
-            .post('/users')
+            .post('/api/users')
             .send({email, password})
             .expect(400);
         
@@ -82,7 +82,7 @@ describe('POST /users', () => {
 
     it('should not create user if email already in database', async () => {
         await request(app)
-            .post('/users')
+            .post('/api/users')
             .send({email: users[0].email, password: 'password123'})
             .expect(400);
     });
@@ -94,7 +94,7 @@ describe('POST /users', () => {
         const randomField = 'junkData';
 
         const res = await request(app)
-            .post('/users')
+            .post('/api/users')
             .send({email, password, name, randomField})
             .expect(400);
         
@@ -102,13 +102,13 @@ describe('POST /users', () => {
     });
 });
 
-describe('GET /users/me', () => {
+describe('GET /api/users/me', () => {
     it('should return user\'s account', async () => {
         const user = users[0];
         const token = tokens[0];
 
         const res = await request(app)
-            .get('/users/me')
+            .get('/api/users/me')
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         expect(res.body.user._id).toBe(user._id.toString());
@@ -116,13 +116,13 @@ describe('GET /users/me', () => {
     });
 });
 
-describe('GET /users/:id', () => {
+describe('GET /api/users/:id', () => {
     it('should return own user object', async () => {
         const user = users[0];
         const token = tokens[0];
 
         const res = await request(app)
-            .get(`/users/${user._id.toString()}`)
+            .get(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         expect(res.body.user._id).toBe(user._id.toString());
@@ -135,7 +135,7 @@ describe('GET /users/:id', () => {
         const token = tokens[2];
 
         const res = await request(app)
-            .get(`/users/${user._id.toString()}`)
+            .get(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         expect(res.body.user._id).toBe(user._id.toString());
@@ -147,7 +147,7 @@ describe('GET /users/:id', () => {
         const token = tokens[0];
 
         await request(app)
-            .get(`/users/${user._id.toString()}1`)
+            .get(`/api/users/${user._id.toString()}1`)
             .set('Authorization', `Bearer ${token}`)
             .expect(400);
     });
@@ -158,19 +158,19 @@ describe('GET /users/:id', () => {
         const user2 = users[1];
 
         const res = await request(app)
-            .get(`/users/${user2._id}`)
+            .get(`/api/users/${user2._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
     });
 });
 
-describe('PATCH /users/me', () => {
+describe('PATCH /api/users/me', () => {
     it('should update user\'s own data with valid input', async () => {
         const token = tokens[0];
         const body = {name: 'Janet'};
 
         const res = await request(app)
-            .patch('/users/me').set('Authorization', `Bearer ${token}`)
+            .patch('/api/users/me').set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
         expect(res.body.user.name).toBe('Janet');
@@ -181,7 +181,7 @@ describe('PATCH /users/me', () => {
         const body = {random: 'Janet'};
 
         const res = await request(app)
-            .patch('/users/me')
+            .patch('/api/users/me')
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(400);
@@ -190,14 +190,14 @@ describe('PATCH /users/me', () => {
     });
 });
 
-describe('PATCH /users/:id', () => {
+describe('PATCH /api/users/:id', () => {
     it('should update user\'s own data with valid input', async () => {
         const user = users[0];
         const token = tokens[0];
         const body = {name: 'Janet'};
 
         const res = await request(app)
-            .patch(`/users/${user._id}`)
+            .patch(`/api/users/${user._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
@@ -213,7 +213,7 @@ describe('PATCH /users/:id', () => {
         const body = {verified: 'true'}
 
         await request(app)
-            .patch(`/users/${user._id}`)
+            .patch(`/api/users/${user._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(400);
@@ -228,7 +228,7 @@ describe('PATCH /users/:id', () => {
         const body = {verified: 'true'}
 
         const res = await request(app)
-            .patch(`/users/${user._id}`)
+            .patch(`/api/users/${user._id}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
@@ -244,7 +244,7 @@ describe('PATCH /users/:id', () => {
         const body = {name: 'Janet'};
 
         const res = await request(app)
-            .patch(`/users/${user._id.toString()}`)
+            .patch(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
@@ -260,7 +260,7 @@ describe('PATCH /users/:id', () => {
         const body = {name: 'Janet'};
 
         await request(app)
-            .patch(`/users/${user._id.toString()}`)
+            .patch(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(401);
@@ -271,7 +271,7 @@ describe('PATCH /users/:id', () => {
         const hexID = new ObjectID().toString();
 
         await request(app)
-            .patch(`/users/${hexID}`)
+            .patch(`/api/users/${hexID}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
     });
@@ -282,7 +282,7 @@ describe('PATCH /users/:id', () => {
         const body = {random: 'field'};
         
         const res = await request(app)
-            .patch(`/users/${user._id.toString()}`)
+            .patch(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(400);
@@ -291,13 +291,13 @@ describe('PATCH /users/:id', () => {
     });
 });
 
-describe('DELETE /users/:id', () => {
+describe('DELETE /api/users/:id', () => {
     it('should delete user\'s own account', async () => {
         const user = users[0];
         const token = tokens[0];
 
         const res = await request(app)
-            .delete(`/users/${user._id.toString()}`)
+            .delete(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         expect(res.body.user._id).toBe(user._id.toString());
@@ -313,7 +313,7 @@ describe('DELETE /users/:id', () => {
         const user2 = users[1];
 
         await request(app)
-            .delete(`/users/${user2._id.toString()}`)
+            .delete(`/api/users/${user2._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
         
@@ -327,7 +327,7 @@ describe('DELETE /users/:id', () => {
         const token = tokens[2];
 
         const res = await request(app)
-            .delete(`/users/${user._id.toString()}`)
+            .delete(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
         expect(res.body.user._id).toBe(user._id.toString());
@@ -338,12 +338,12 @@ describe('DELETE /users/:id', () => {
     });
 });
 
-describe('POST /users/login', () => {
+describe('POST /api/users/login', () => {
     it('should send new token to user logging in', async () => {
         const testUser = users[1];
 
         const res = await request(app)
-            .post('/users/login')
+            .post('/api/users/login')
             .send({email: testUser.email, password: testUser.password})
             .expect(200);
         expect(res.body.token).toBeTruthy();
@@ -355,7 +355,7 @@ describe('POST /users/login', () => {
         const testUser = users[1];
 
         const res = await request(app)
-            .post('/users/login')
+            .post('/api/users/login')
             .send({email: testUser.email, password: testUser.password + '1!'})
             .expect(400);
         expect(res.header['x-auth']).toBeFalsy();
