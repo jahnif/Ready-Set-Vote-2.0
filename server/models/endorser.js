@@ -33,12 +33,11 @@ const EndorserSchema = new mongoose.Schema({
     }
 });
 
-// Uncomment once Endorsement model created.
-// EndorserSchema.virtual('endorsements', {
-//     ref: 'Endorsements',
-//     localField: '_id',
-//     foreignField: 'endorser'
-// });
+EndorserSchema.virtual('endorsedCandidates', {
+    ref: 'Candidate',
+    localField: '_id',
+    foreignField: 'endorsements'
+});
 
 EndorserSchema.plugin(mongoosePaginate);
 
