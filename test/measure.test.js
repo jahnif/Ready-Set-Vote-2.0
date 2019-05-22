@@ -247,7 +247,7 @@ describe('DELETE /api/measures/:id', () => {
         await request(app)
             .delete(`/api/measures/${measure._id}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
+            .expect(204);
         
         const measuresDB = await Measure.findById(measure._id);
         expect(measuresDB).toBeNull();

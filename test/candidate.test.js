@@ -276,7 +276,7 @@ describe('DELETE /api/candidates/:id', () => {
         await request(app)
             .delete(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
+            .expect(204);
         
         const candidateDB = await Candidate.findById(candidate._id);
         expect(candidateDB).toBeNull();

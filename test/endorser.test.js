@@ -196,7 +196,7 @@ describe('DELETE /api/endorsers/:id', () => {
         await request(app)
             .delete(`/api/endorsers/${endorser._id}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
+            .expect(204);
         
         const endorserDB = await Endorser.findById(endorser._id);
         expect(endorserDB).toBeNull();

@@ -300,9 +300,7 @@ describe('DELETE /api/users/:id', () => {
         const res = await request(app)
             .delete(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
-        expect(res.body.user._id).toBe(user._id.toString());
-        expect(res.body.user.name).toBe(user.name);
+            .expect(204);
 
         const userDB = await User.findById(user._id);
         expect(userDB).toBeNull();
@@ -330,9 +328,7 @@ describe('DELETE /api/users/:id', () => {
         const res = await request(app)
             .delete(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
-        expect(res.body.user._id).toBe(user._id.toString());
-        expect(res.body.user.name).toBe(user.name);
+            .expect(204);
 
         const userDB = await User.findById(user._id);
         expect(userDB).toBeNull();

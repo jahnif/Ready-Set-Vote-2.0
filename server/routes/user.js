@@ -146,7 +146,7 @@ router.delete('/users/:id', [isAuthenticated, validateID], async (req, res) => {
             if(!user) {
                 return res.sendStatus(404);
             }
-            return res.send({ user });
+            return res.status(204).send();
         } else {
             return res.sendStatus(401);
         }

@@ -87,7 +87,7 @@ router.delete('/endorsers/:id', [isAuthenticated, isAdmin, validateID], async (r
             return res.sendStatus(404);
         };
 
-        return res.send({ endorser });
+        return res.status(204).send();
     } catch(e) {
         res.status(500).send(e);
     }
