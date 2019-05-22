@@ -19,7 +19,6 @@ describe('GET /api/candidates/:id', () => {
             .get(`/api/candidates/${candidate._id}`)
             .expect(200);
         expect(res.body.candidate._id).toBe(candidate._id.toString());
-        expect(res.body.candidate.name).toBe(candidate.name);
         expect(res.body.candidate.party.name).toBe(parties[0].name);
     });
 
@@ -58,12 +57,6 @@ describe('POST /api/candidates', () => {
             .expect(201);
         expect(res.body.candidate.name).toBe(candidate.name);
         expect(res.body.candidate.party.name).toBe(candidate.party);
-
-        const newCandidate = await Candidate.findById(res.body.candidate._id);
-        expect(newCandidate).toBeInstanceOf(Candidate);
-        expect(newCandidate.name).toBe(candidate.name);
-        expect(newCandidate.party.name).toBe(res.body.candidate.party.name);
-        expect(newCandidate.party._id).toEqual(parties[0]._id);
     });
 
     it('should create candidate and add party if user is verified', async () => {
@@ -79,11 +72,6 @@ describe('POST /api/candidates', () => {
             .expect(201);
         expect(res.body.candidate.name).toBe(candidateParty.name);
         expect(res.body.candidate.party.name).toBe(candidateParty.party);
-
-        const newCandidate = await Candidate.findById(res.body.candidate._id);
-        expect(newCandidate).toBeTruthy();
-        expect(newCandidate.name).toBe(candidateParty.name);
-        expect(newCandidate.party.name).toBe(res.body.candidate.party.name);
     });
 
     it('should return 400 error with incorrect email address', async () => {
@@ -167,9 +155,6 @@ describe('PATCH /api/candidates/:id', () => {
             .send(body)
             .expect(200);
         expect(res.body.candidate.name).toBe(body.name);
-
-        const updatedCandidate = await Candidate.findById(res.body.candidate._id);
-        expect(updatedCandidate.name).toBe(body.name);
     });
 
     it('should update candidate party if verified', async () => {
@@ -183,9 +168,6 @@ describe('PATCH /api/candidates/:id', () => {
             .send(body)
             .expect(200);
         expect(res.body.candidate.party.name).toBe(body.party);
-
-        const updatedCandidate = await Candidate.findById(candidate._id);
-        expect(updatedCandidate.party.name).toBe(res.body.candidate.party.name);
     });
 
     it('should not update candidate party if no change', async () => {
@@ -211,9 +193,6 @@ describe('PATCH /api/candidates/:id', () => {
             .patch(`/api/candidates/${candidate._id}`)
             .send(body)
             .expect(401);
-        
-        const updatedCandidate = await Candidate.findById(candidate._id);
-        expect(updatedCandidate.name).not.toBe(body.name);
     });
 
     it('should not update candidate data if not verified', async () => {
@@ -226,9 +205,6 @@ describe('PATCH /api/candidates/:id', () => {
             .send('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(401);
-        
-        const updatedCandidate = await Candidate.findById(candidate._id);
-        expect(updatedCandidate.name).not.toBe(body.name);
     });
 
     it('should return 400 with corrupted ID', async () => {
@@ -277,9 +253,6 @@ describe('DELETE /api/candidates/:id', () => {
             .delete(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(204);
-        
-        const candidateDB = await Candidate.findById(candidate._id);
-        expect(candidateDB).toBeNull();
     });
 
     it('should not delete candidate if not admin', async () => {
@@ -290,8 +263,5 @@ describe('DELETE /api/candidates/:id', () => {
             .delete(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
-        
-        const candidateDB = await Candidate.findById(candidate._id);
-        expect(candidateDB).toBeInstanceOf(Candidate);
     });
 });

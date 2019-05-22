@@ -55,11 +55,6 @@ describe('POST /api/users', () => {
             .post('/api/users')
             .send({name, email, password})
             .expect(201);
-        
-        const user = await User.findById(res.body.user._id);
-        expect(user).toBeTruthy();
-        expect(user.password).not.toBe(password);
-
         expect(res.body.token).toBeTruthy();
         expect(res.body.user._id).toBeTruthy();
         expect(res.body.user.name).toBe(name);
@@ -201,9 +196,6 @@ describe('PATCH /api/users/:id', () => {
             .send(body)
             .expect(200);
         expect(res.body.user.name).toBe(body.name);
-
-        const updatedUser = await User.findById(user._id);
-        expect(updatedUser.name).toBe(body.name);
     });
 
     it('should not verify user if not Admin', async () => {
@@ -216,9 +208,6 @@ describe('PATCH /api/users/:id', () => {
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(400);
-
-        const updatedUser = await User.findById(user._id);
-        expect(updatedUser.verified).toBe(false);
     })
 
     it('should verify user if Admin', async () => {
@@ -232,9 +221,6 @@ describe('PATCH /api/users/:id', () => {
             .send(body)
             .expect(200);
         expect(res.body.user.verified).toBe(true);
-
-        const updatedUser = await User.findById(user._id);
-        expect(updatedUser.verified).toBe(true);
     })
 
     it('should update another user\'s data by Admin with valid input', async () => {
@@ -248,9 +234,6 @@ describe('PATCH /api/users/:id', () => {
             .send(body)
             .expect(200);
         expect(res.body.user.name).toBe(body.name); 
-        
-        const updatedUser = await User.findById(user._id);
-        expect(updatedUser.name).toBe(body.name);
     });
 
     it('should not update another user\'s data', async () => {
@@ -301,9 +284,6 @@ describe('DELETE /api/users/:id', () => {
             .delete(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(204);
-
-        const userDB = await User.findById(user._id);
-        expect(userDB).toBeNull();
     });
 
     it('should not delete another user\'s account', async () => {
@@ -315,9 +295,6 @@ describe('DELETE /api/users/:id', () => {
             .delete(`/api/users/${user2._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
-        
-        const userDB = await User.findById(user._id);
-        expect(userDB).toBeInstanceOf(User);
     });
 
     it('should allow admin to delete user\'s account', async () => {
@@ -329,9 +306,6 @@ describe('DELETE /api/users/:id', () => {
             .delete(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(204);
-
-        const userDB = await User.findById(user._id);
-        expect(userDB).toBeNull();
     });
 });
 
@@ -344,7 +318,6 @@ describe('POST /api/users/login', () => {
             .send({email: testUser.email, password: testUser.password})
             .expect(200);
         expect(res.body.token).toBeTruthy();
-        expect(res.body.user._id).toBeTruthy();
         expect(res.body.user.name).toBe(testUser.name);
     });
 
