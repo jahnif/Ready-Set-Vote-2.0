@@ -83,7 +83,7 @@ router.get('/users/:id', [isAuthenticated, validateID], async (req, res) => {
         // We need to do another permission check here, rather than in middleware, because we need to check against route variables.
         // Any user, verified or not, should be able to access their profile.
         // However, only verified admins should have this ability.
-        if ((req.user.id == req.id) || (req.user.admin === true && req.user.verified === true)) {
+        if ((req.user.id == req.id) || (req.user.admin && req.user.verified)) {
             const user = await User.findById(req.id);
             res.send({user});
         } else {
@@ -141,7 +141,7 @@ router.delete('/users/:id', [isAuthenticated, validateID], async (req, res) => {
         // We need to do another permission check here, rather than in middleware, because we need to check against route variables.
         // Any user, verified or not, should be able to delete their profile.
         // However, only verified admins should have this ability.
-        if ((req.user.id == req.id) || (req.user.admin === true && req.user.verified === true)) {
+        if ((req.user.id == req.id) || (req.user.admin && req.user.verified)) {
             const user = await User.findByIdAndDelete(req.id);
             if(!user) {
                 return res.sendStatus(404);
