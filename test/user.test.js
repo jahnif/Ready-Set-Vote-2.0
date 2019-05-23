@@ -3,11 +3,11 @@ const { ObjectID } = require('mongodb');
 const request = require('supertest');
 
 const app = require('../server/app');
-const setupDatabase = require('./fixtures/db');
+const { setupUsers } = require('./fixtures/db');
 const User = require('../server/models/user');
 const { users, tokens } = require('./fixtures/users')
 
-beforeEach(setupDatabase);
+beforeAll(setupUsers);
 
 describe('GET /api/users', () => {
     it('should return paginated user list (offset: 0, limit: 10) if admin', async () => {
@@ -17,8 +17,8 @@ describe('GET /api/users', () => {
             .get('/api/users')
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
-        expect(res.body.userCount).toBe(3);
-        expect(res.body.users.length).toBe(3);
+        expect(res.body.userCount).toBe(users.length);
+        expect(res.body.users.length).toBe(users.length);
         expect(res.body.limit).toBe(10);
         expect(res.body.offset).toBe(0);
     });
@@ -30,7 +30,7 @@ describe('GET /api/users', () => {
             .get('/api/users?offset=2&limit=1')
             .set('Authorization', `Bearer ${token}`)
             .expect(200);
-        expect(res.body.userCount).toBe(3);
+        expect(res.body.userCount).toBe(users.length);
         expect(res.body.users.length).toBe(1);
         expect(res.body.users[0].name).toBe(users[2].name);
         expect(res.body.limit).toBe(1);
@@ -87,7 +87,7 @@ describe('POST /api/users', () => {
             .expect(400);
     });
 
-    it('should return 400  and field error if user sends incorrect fields', async () => {
+    it('should return 400 and field error if user sends incorrect fields', async () => {
         const email = 'example@example.com';
         const password = 'valid_pw';
         const name = 'example';
@@ -173,7 +173,7 @@ describe('PATCH /api/users/me', () => {
             .patch('/api/users/me').set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
-        expect(res.body.user.name).toBe('Janet');
+        expect(res.body.user.name).toBe(body.name);
     });
 
     it('should not update user\'s own data with invalid input', async () => {
@@ -185,7 +185,6 @@ describe('PATCH /api/users/me', () => {
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(400);
-        
         expect(res.body.error).toBe('Invalid Fields Submitted.');
     });
 });
@@ -292,6 +291,8 @@ describe('PATCH /api/users/:id', () => {
 });
 
 describe('DELETE /api/users/:id', () => {
+    beforeAll(setupUsers);
+
     it('should delete user\'s own account', async () => {
         const user = users[0];
         const token = tokens[0];
@@ -299,48 +300,44 @@ describe('DELETE /api/users/:id', () => {
         const res = await request(app)
             .delete(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
-        expect(res.body.user._id).toBe(user._id.toString());
-        expect(res.body.user.name).toBe(user.name);
+            .expect(204);
 
-        const userDB = await User.find();
-        expect(userDB.length).toBe(2);
+        const userDB = await User.findById(user._id);
+        expect(userDB).toBeNull();
     });
 
     it('should not delete another user\'s account', async () => {
-        const user = users[0];
-        const token = tokens[0];
-        const user2 = users[1];
+        const user = users[1];
+        const token = tokens[1];
+        const user2 = users[2];
 
         await request(app)
             .delete(`/api/users/${user2._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
         
-            const userDB = await User.find();
-        expect(userDB.length).toBe(3);
+        const userDB = await User.findById(user._id);
+        expect(userDB).toBeInstanceOf(User);
     });
 
     it('should allow admin to delete user\'s account', async () => {
-        const user = users[0];
+        const user = users[1];
         const admin = users[2];
         const token = tokens[2];
 
         const res = await request(app)
             .delete(`/api/users/${user._id.toString()}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
-        expect(res.body.user._id).toBe(user._id.toString());
-        expect(res.body.user.name).toBe(user.name);
+            .expect(204);
 
-        const userDB = await User.find();
-        expect(userDB.length).toBe(2);
+        const userDB = await User.findById(user._id);
+        expect(userDB).toBeNull();
     });
 });
 
 describe('POST /api/users/login', () => {
     it('should send new token to user logging in', async () => {
-        const testUser = users[1];
+        const testUser = users[2];
 
         const res = await request(app)
             .post('/api/users/login')

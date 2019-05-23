@@ -5,10 +5,10 @@ const request = require('supertest');
 
 const Measure = require('../server/models/measure');
 const measures = require('./fixtures/measures');
-const setupDatabase = require('./fixtures/db');
+const {setupMeasures, setupUsers} = require('./fixtures/db');
 const { tokens } = require('./fixtures/users');
 
-beforeEach(setupDatabase);
+beforeAll(setupMeasures);
 
 describe('GET /api/measures', () => {
     it('should return a list of paginated measures (limit: 10, offset: 0) when no params provided', async () => {
@@ -16,8 +16,8 @@ describe('GET /api/measures', () => {
         const res = await request(app)
             .get('/api/measures')
             .expect(200);
-        expect(res.body.measures.length).toBe(2);
-        expect(res.body.measuresCount).toBe(2);
+        expect(res.body.measures.length).toBe(measures.length);
+        expect(res.body.measuresCount).toBe(measures.length);
         expect(res.body.limit).toBe(10);
         expect(res.body.offset).toBe(0);
     });
@@ -28,7 +28,7 @@ describe('GET /api/measures', () => {
             .get('/api/measures?limit=1&offset=1')
             .expect(200);
         expect(res.body.measures.length).toBe(1);
-        expect(res.body.measuresCount).toBe(2);
+        expect(res.body.measuresCount).toBe(measures.length);
         expect(res.body.measures[0].name).toBe(measures[1].name);
     });
 
@@ -37,8 +37,8 @@ describe('GET /api/measures', () => {
         const res = await request(app)
             .get('/api/measures?sortBy=title:desc')
             .expect(200);
-        expect(res.body.measures.length).toBe(2);
-        expect(res.body.measuresCount).toBe(2);
+        expect(res.body.measures.length).toBe(measures.length);
+        expect(res.body.measuresCount).toBe(measures.length);
         expect(res.body.measures[0].name).toBe(measures[1].name);
     });
 });
@@ -72,6 +72,8 @@ describe('GET /api/measures/:id', () => {
 });
 
 describe('POST /api/measures', () => {
+    beforeAll(setupUsers);
+
     it('should create measure if user is verified', async () => {
         const measure = {
             title: 'Jump Rope',
@@ -90,7 +92,7 @@ describe('POST /api/measures', () => {
         expect(res.body.measure.options).toEqual(measure.options);
 
         const newMeasure = await Measure.findById(res.body.measure._id);
-        expect(newMeasure).toBeTruthy();
+        expect(newMeasure).toBeInstanceOf(Measure);
         expect(newMeasure.title).toBe(measure.title);
     });
 
@@ -154,6 +156,8 @@ describe('POST /api/measures', () => {
 });
 
 describe('PATCH /api/measures/:id', () => {
+    beforeAll(setupUsers);
+
     it('should update measure data if verified', async () => {
         const token = tokens[0];
         const measure = measures[0];
@@ -172,7 +176,7 @@ describe('PATCH /api/measures/:id', () => {
 
     it('should not update endorser data if not logged in', async () => {
         const measure = measures[0];
-        const body = {title: 'Jump Rope'};
+        const body = {title: 'Jump Ship'};
 
         const res = await request(app)
             .patch(`/api/measures/${measure._id}`)
@@ -180,12 +184,12 @@ describe('PATCH /api/measures/:id', () => {
             .expect(401);
         
         const updatedMeasure = await Measure.findById(measure._id);
-        expect(updatedMeasure.name).toBe(measure.name);
+        expect(updatedMeasure.title).not.toBe(body.title);
     });
 
     it('should not update endorser data if not verified', async () => {
         const measure = measures[0];
-        const body = {title: 'Jump Rope'};
+        const body = {title: 'Jump Bail'};
         const token = tokens[1];
 
         const res = await request(app)
@@ -195,7 +199,7 @@ describe('PATCH /api/measures/:id', () => {
             .expect(401);
         
         const updatedMeasure = await Measure.findById(measure._id);
-        expect(updatedMeasure.name).toBe(measure.name);
+        expect(updatedMeasure.title).not.toBe(body.title);
     });
 
     it('should return 400 with corrupted ID', async () => {
@@ -234,6 +238,8 @@ describe('PATCH /api/measures/:id', () => {
 });
 
 describe('DELETE /api/measures/:id', () => {
+    beforeAll(setupUsers);
+
     it('should delete measure if admin', async () => {
         const token = tokens[2];
         const measure = measures[0];
@@ -241,22 +247,22 @@ describe('DELETE /api/measures/:id', () => {
         await request(app)
             .delete(`/api/measures/${measure._id}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
+            .expect(204);
         
-        const measuresDB = await Measure.find();
-        expect(measuresDB.length).toBe(1);
+        const measuresDB = await Measure.findById(measure._id);
+        expect(measuresDB).toBeNull();
     });
 
     it('should not delete measure if not admin', async () => {
         const token = tokens[0];
-        const measure = measures[0];
+        const measure = measures[1];
 
         await request(app)
             .delete(`/api/measures/${measure._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
         
-        const measuresDB = await Measure.find();
-        expect(measuresDB.length).toBe(2);
+        const measuresDB = await Measure.findById(measure._id);
+        expect(measuresDB).toBeInstanceOf(Measure);
     });
 });

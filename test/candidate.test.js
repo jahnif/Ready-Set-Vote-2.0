@@ -6,10 +6,10 @@ const request = require('supertest');
 const Candidate = require('../server/models/candidate');
 const candidates = require('./fixtures/candidates');
 const parties = require('./fixtures/parties');
-const setupDatabase = require('./fixtures/db');
+const { setupCandidates, setupUsers } = require('./fixtures/db');
 const { tokens } = require('./fixtures/users');
 
-beforeEach(setupDatabase);
+beforeAll(setupCandidates);
 
 describe('GET /api/candidates/:id', () => {
     it('should return candidate by id', async () => {
@@ -41,24 +41,26 @@ describe('GET /api/candidates/:id', () => {
 });
 
 describe('POST /api/candidates', () => {
+    beforeAll(setupUsers);
+
     const candidate = {
         name: 'Jane Smith',
         party: parties[0].name
     };
-    const verifiedToken = tokens[0];
-    const unverifiedToken = tokens[1];
+    const verifiedUserToken = tokens[0];
+    const unverifiedUserToken = tokens[1];
 
     it('should create a candidate in existing party if user is verified', async () => {
         const res = await request(app)
             .post('/api/candidates')
-            .set('Authorization', `Bearer ${verifiedToken}`)
+            .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidate)
             .expect(201);
         expect(res.body.candidate.name).toBe(candidate.name);
         expect(res.body.candidate.party.name).toBe(candidate.party);
 
         const newCandidate = await Candidate.findById(res.body.candidate._id);
-        expect(newCandidate).toBeTruthy();
+        expect(newCandidate).toBeInstanceOf(Candidate);
         expect(newCandidate.name).toBe(candidate.name);
         expect(newCandidate.party.name).toBe(res.body.candidate.party.name);
         expect(newCandidate.party._id).toEqual(parties[0]._id);
@@ -72,7 +74,7 @@ describe('POST /api/candidates', () => {
         
         const res = await request(app)
             .post('/api/candidates')
-            .set('Authorization', `Bearer ${verifiedToken}`)
+            .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidateParty)
             .expect(201);
         expect(res.body.candidate.name).toBe(candidateParty.name);
@@ -93,7 +95,7 @@ describe('POST /api/candidates', () => {
         
         await request(app)
             .post('/api/candidates')
-            .set('Authorization', `Bearer ${verifiedToken}`)
+            .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidateParty)
             .expect(400);
     });
@@ -107,7 +109,7 @@ describe('POST /api/candidates', () => {
         
         await request(app)
             .post('/api/candidates')
-            .set('Authorization', `Bearer ${verifiedToken}`)
+            .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidateParty)
             .expect(400);
     });
@@ -121,7 +123,7 @@ describe('POST /api/candidates', () => {
         
         await request(app)
             .post('/api/candidates')
-            .set('Authorization', `Bearer ${verifiedToken}`)
+            .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send(candidateParty)
             .expect(400);
     });
@@ -136,7 +138,7 @@ describe('POST /api/candidates', () => {
     it('should not create candidate if user not verified', async () => {        
         await request(app)
             .post('/api/candidates')
-            .set('Authorization', `Bearer ${unverifiedToken}`)
+            .set('Authorization', `Bearer ${unverifiedUserToken}`)
             .send(candidate)
             .expect(401);
     });
@@ -144,7 +146,7 @@ describe('POST /api/candidates', () => {
     it('should not create candidate if correct fields not supplied', async () => {
         const res = await request(app)
             .post('/api/candidates')
-            .set('Authorization', `Bearer ${verifiedToken}`)
+            .set('Authorization', `Bearer ${verifiedUserToken}`)
             .send({'random': 'field'})
             .expect(400);
         expect(res.body.error).toBe('Invalid Fields Submitted.')
@@ -152,6 +154,8 @@ describe('POST /api/candidates', () => {
 });
 
 describe('PATCH /api/candidates/:id', () => {
+    beforeAll(setupUsers);
+
     it('should update candidate data if verified', async () => {
         const token = tokens[0];
         const candidate = candidates[0];
@@ -186,9 +190,9 @@ describe('PATCH /api/candidates/:id', () => {
 
     it('should not update candidate party if no change', async () => {
         const token = tokens[0];
-        const candidate = candidates[0];
+        const candidate = candidates[1];
         const body = {
-            party: parties[0].name
+            party: parties[1].name
         };
 
         const res = await request(app)
@@ -196,12 +200,12 @@ describe('PATCH /api/candidates/:id', () => {
             .set('Authorization', `Bearer ${token}`)
             .send(body)
             .expect(200);
-        expect(res.body.candidate.party._id).toBe(parties[0]._id.toHexString());
+        expect(res.body.candidate.party._id).toBe(parties[1]._id.toHexString());
     });
 
     it('should not update candidate data if not signed in', async () => {
         const candidate = candidates[0];
-        const body = {name: 'Johannes Smythe'};
+        const body = {name: 'Joe Smith'};
 
         const res = await request(app)
             .patch(`/api/candidates/${candidate._id}`)
@@ -209,13 +213,13 @@ describe('PATCH /api/candidates/:id', () => {
             .expect(401);
         
         const updatedCandidate = await Candidate.findById(candidate._id);
-        expect(updatedCandidate.name).toBe(candidate.name);
+        expect(updatedCandidate.name).not.toBe(body.name);
     });
 
     it('should not update candidate data if not verified', async () => {
         const candidate = candidates[0];
         const token = tokens[1];
-        const body = {name: 'Johannes Smythe'};
+        const body = {name: 'Joan Smitts'};
 
         const res = await request(app)
             .patch(`/api/candidates/${candidate._id}`)
@@ -224,7 +228,7 @@ describe('PATCH /api/candidates/:id', () => {
             .expect(401);
         
         const updatedCandidate = await Candidate.findById(candidate._id);
-        expect(updatedCandidate.name).toBe(candidate.name);
+        expect(updatedCandidate.name).not.toBe(body.name);
     });
 
     it('should return 400 with corrupted ID', async () => {
@@ -263,6 +267,8 @@ describe('PATCH /api/candidates/:id', () => {
 });
 
 describe('DELETE /api/candidates/:id', () => {
+    beforeAll(setupUsers);
+
     it('should delete candidate if admin', async () => {
         const token = tokens[2];
         const candidate = candidates[0];
@@ -270,22 +276,22 @@ describe('DELETE /api/candidates/:id', () => {
         await request(app)
             .delete(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
+            .expect(204);
         
-        const candidateDB = await Candidate.find();
-        expect(candidateDB.length).toBe(1);
+        const candidateDB = await Candidate.findById(candidate._id);
+        expect(candidateDB).toBeNull();
     });
 
     it('should not delete candidate if not admin', async () => {
         const token = tokens[0];
-        const candidate = candidates[0];
+        const candidate = candidates[1];
 
         await request(app)
             .delete(`/api/candidates/${candidate._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
         
-        const candidateDB = await Candidate.find();
-        expect(candidateDB.length).toBe(2);
+        const candidateDB = await Candidate.findById(candidate._id);
+        expect(candidateDB).toBeInstanceOf(Candidate);
     });
 });

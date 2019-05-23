@@ -4,7 +4,7 @@
 
 const isVerified = async (req, res, next) => {
     try {
-        if (req.user.verified !== true) {
+        if (!req.user.verified) {
             return res.sendStatus(401);
         }
         next();

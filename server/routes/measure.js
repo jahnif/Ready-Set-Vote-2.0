@@ -87,8 +87,7 @@ router.delete('/measures/:id', [isAuthenticated, isAdmin, validateID], async (re
         if (!measure) {
             return res.sendStatus(404);
         };
-
-        return res.send({ measure });
+        return res.sendStatus(204);
     } catch(e) {
         res.status(500).send(e);
     }

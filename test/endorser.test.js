@@ -5,10 +5,10 @@ const request = require('supertest');
 
 const Endorser = require('../server/models/endorser');
 const endorsers = require('./fixtures/endorsers');
-const setupDatabase = require('./fixtures/db');
+const { setupEndorsers, setupUsers } = require('./fixtures/db');
 const { tokens } = require('./fixtures/users');
 
-beforeEach(setupDatabase);
+beforeAll(setupEndorsers);
 
 describe('GET /api/endorsers', () => {
     it('should return a  paginated list of endorsers (limit 10, offset 0) when no params provided', async () => {
@@ -68,6 +68,7 @@ describe('GET /api/endorsers/:id', () => {
 });
 
 describe('POST /api/endorsers', () => {
+    beforeAll(setupUsers);
     it('should create endorser if user is authorized', async () => {
         const endorser = {
             name: 'The Mint',
@@ -120,6 +121,7 @@ describe('POST /api/endorsers', () => {
 });
 
 describe('PATCH /api/endorsers/:id', () => {
+    beforeAll(setupUsers);
     it('should update endorser data if authorized', async () => {
         const token = tokens[0];
         const endorser = endorsers[0];
@@ -138,7 +140,7 @@ describe('PATCH /api/endorsers/:id', () => {
 
     it('should not update endorser data if unauthorized', async () => {
         const endorser = endorsers[0];
-        const body = {name: 'The Mint'};
+        const body = {name: 'The Times'};
 
         const res = await request(app)
             .patch(`/api/endorsers/${endorser._id}`)
@@ -146,7 +148,7 @@ describe('PATCH /api/endorsers/:id', () => {
             .expect(401);
         
         const updatedEndorser = await Endorser.findById(endorser._id);
-        expect(updatedEndorser.name).toBe(endorser.name);
+        expect(updatedEndorser.name).not.toBe(body.name);
     });
 
     it('should return 400 with corrupted ID', async () => {
@@ -185,6 +187,8 @@ describe('PATCH /api/endorsers/:id', () => {
 });
 
 describe('DELETE /api/endorsers/:id', () => {
+    beforeAll(setupUsers);
+
     it('should delete endorser if admin', async () => {
         const token = tokens[2];
         const endorser = endorsers[0];
@@ -192,22 +196,22 @@ describe('DELETE /api/endorsers/:id', () => {
         await request(app)
             .delete(`/api/endorsers/${endorser._id}`)
             .set('Authorization', `Bearer ${token}`)
-            .expect(200);
+            .expect(204);
         
-        const endorserDB = await Endorser.find();
-        expect(endorserDB.length).toBe(1);
+        const endorserDB = await Endorser.findById(endorser._id);
+        expect(endorserDB).toBeNull();
     });
 
     it('should not delete endorser if not admin', async () => {
         const token = tokens[0];
-        const endorser = endorsers[0];
+        const endorser = endorsers[1];
 
         await request(app)
             .delete(`/api/endorsers/${endorser._id}`)
             .set('Authorization', `Bearer ${token}`)
             .expect(401);
         
-        const endorserDB = await Endorser.find();
-        expect(endorserDB.length).toBe(2);
+        const endorserDB = await Endorser.findById(endorser._id);
+        expect(endorserDB).toBeInstanceOf(Endorser);
     });
 });

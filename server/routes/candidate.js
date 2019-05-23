@@ -126,7 +126,7 @@ router.delete('/candidates/:id', [isAuthenticated, isAdmin, validateID], async (
         if (!candidate) {
             return res.sendStatus(404);
         };
-        return res.send({ candidate });
+        return res.sendStatus(204);
     } catch(e) {
         res.status(500).send(e);
     }

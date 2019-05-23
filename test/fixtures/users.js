@@ -8,7 +8,7 @@ const userThreeId = new ObjectID();
 const tokens = [ 
     jwt.sign({_id: userOneId}, process.env.JWT_SECRET).toString(),
     jwt.sign({_id: userTwoId}, process.env.JWT_SECRET).toString(),
-    jwt.sign({_id: userThreeId}, process.env.JWT_SECRET).toString()
+    jwt.sign({_id: userThreeId}, process.env.JWT_SECRET).toString(),
 ]
 
 const users = [{
@@ -19,9 +19,9 @@ const users = [{
     verified: true
 }, {
     _id: userTwoId,
-    name: 'Darryl',
-    email: 'darryl.banks@example.com',
-    password: 'notSecurePassword'
+    name: 'unverified',
+    email: 'user2@rsv.org',
+    password: 'rsvote'
 }, {
     _id: userThreeId,
     name: 'Joseph Peha',
