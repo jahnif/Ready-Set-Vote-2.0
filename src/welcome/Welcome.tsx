@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
+import Footer from '../Footer';
 import rsvLogo from "../img/rsvLogo-new.svg";
 
 class Welcome extends React.Component<RouteComponentProps> {
@@ -16,6 +17,7 @@ class Welcome extends React.Component<RouteComponentProps> {
                     <a href="es/start" className="spanish-start">Disponible en español</a>
                     <a href="cn/start" className="spanish-start">中文</a>
                 </div>
+                <Footer />
             </div>
         );
     }

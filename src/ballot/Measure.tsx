@@ -7,7 +7,19 @@ interface IMeasureProps {
     measure: MeasureStore
 }
 
-class Measure extends React.Component<IMeasureProps> {
+interface IMeasureState {
+    selectedChoiceId: string,
+}
+  
+class Measure extends React.Component<IMeasureProps, IMeasureState> {
+    constructor(props: any) {
+      super(props);
+      
+      this.state = {
+          selectedChoiceId: ''
+      };
+    }
+
     public render() {
         return (
             <div className="measure">
@@ -22,16 +34,22 @@ class Measure extends React.Component<IMeasureProps> {
                                 id={choice.id}
                                 text={choice.text}
                                 url={choice.url}
-                                urlText={choice.urlText} />
+                                urlText={choice.urlText}
+                                selected={choice.id === this.state.selectedChoiceId}
+                                handleSelectChoice={this.handleSelectChoice}/>
                         )
                     })}                
                 </div>
-                
-                {/* <div className="measure-ml">
-                    Municipal League Recommends: <span>{this.props.measure.municipalLeaugeRecommendation}</span>
-                </div> */}
             </div>
         );
+    }
+
+    private handleSelectChoice = (id: string) => {
+        if (this.state.selectedChoiceId === id) {
+            this.setState({ selectedChoiceId: '' });
+        } else {
+            this.setState({ selectedChoiceId: id });
+        }
     }
 }
 
