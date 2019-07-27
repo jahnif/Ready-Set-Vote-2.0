@@ -1,35 +1,28 @@
 import * as React from "react";
-import "../css/admin.css";
+import AdminMenu from "./AdminMenu";
+import EditTable from "./EditTable";
 
-import Endorsements from './Endorsements';
-import Links from './Links';
-import Reports from './Reports';
-
-
-class Admin extends React.Component {
+class Admin extends React.Component<{}, { editing: boolean }> {
+  // TODO: add mobx and AdminStore component for state
   constructor(props: any) {
     super(props);
+
+    this.state = {
+      editing: false
+    };
   }
 
   public render() {
     return (
       <div>
-        <div className="top-line" />
-          {/* TODO: import pictures, like torch logo, from old code */}
-          <div className="admin-dash">
-          <div className="logoTop" /> 
-          <div className="dashboard">
-            <div className="dashboard-left">
-              <Links />
-            </div>
-            <div className="dasboard-right">
-              <Endorsements />
-              <Reports />
-            </div>
-          </div>
-        </div>
+        {this.state.editing ? (
+          <EditTable />
+        ) : (
+          <AdminMenu editing={this.state.editing} />
+          //   TODO: pass function to toggle editing vs menu instead of state itself
+        )}
       </div>
-    )
+    );
   }
 }
 
